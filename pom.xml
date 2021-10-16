@@ -4,4 +4,9 @@
 	<artifactId>cxf-ecris</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <modules>
+    	<module>cxf-consumer-ecris</module>
+    	<module>cxf-provider-ecris</module>
+    	<module>cxf-test-ecris</module>
+    </modules>
 </project>
