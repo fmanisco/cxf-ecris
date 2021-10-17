@@ -1,0 +1,1129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ECRIS Technical Specifications – Detailed Technical Specifications
+Definition of ECRIS common reference table structures
+
+Author: iLICONN – Intrasoft International S.A.
+Owner: European Commission – DG Justice
+Issue Date: 14/03/2013
+Internal Version of File: 0.16
+Approval Status: Final
+
+File Authors:
+Panos ATHANASIOU (iLICONN – Intrasoft International S.A.)
+Ludovic COLACINO DIAS (iLICONN – Intrasoft International S.A.)
+
+File History:
+0.1 - 25/10/2010 - PAT - Initial draft
+0.2 - 02/11/2010 - PAT, LCO - Implementation of comments after internal revision
+0.3 - 05/11/2010 - PAT, LCO - Update based on v0.8 of the Business Analysis document
+0.4 - 07/11/2010 - LCO - Revision
+0.5 - 08/11/2010 - LCO - Implementation of comments after internal revision
+0.6 - 09/11/2010 - PAT - Minor fixes
+0.7 - 09/11/2010 - LCO - Revision for delivery
+0.8 - 17/12/2010 - PAT - Various updates based on agreements found during Expert Group Review meeting 01-Dec-2010 and COPEN meeting 10-Dec-2010
+0.9 - 20/12/2010 - LCO - Revision for delivery of final version
+0.10 - 24/02/2011 - PAT - Various updates based on Business Analysis v1.4
+0.11 - 28/02/2011 - LCO - Minor fixes (compliant with Business Analysis v1.4)
+0.12 - 01/03/2011 - PAT - Minor fix (compliant with Business Analysis v1.4)
+0.13 - 29/09/2011 - PAT - Minor fix - AU became AT in country code definitions
+0.14 - 03/11/2011 - LCO - Minor corrections in enumerations for elements "MemberStateCodeType" and "CountrySubdivisionType"
+0.15 - 09/10/2012 - LCO - Changing the definition of element "MemberStateCodeType"
+						  Strict enumeration of Member State codes has been replaced by a generic pattern allowing any 2-letter String value
+0.16 - 14/03/2013 - LCO - Replacing the occurrences of "MultilingualTextType" with "MultilingualTextType400Chars" (introduces a limit of 400 chars to some of the text elements)
+-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:commons="http://ec.europa.eu/ECRIS/commons-v1.0" xmlns:crt="http://ec.europa.eu/ECRIS/common-reference-tables-v1.0" targetNamespace="http://ec.europa.eu/ECRIS/common-reference-tables-v1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xsd:import namespace="http://ec.europa.eu/ECRIS/commons-v1.0" schemaLocation="commons-v1.0.xsd"/>
+	<!-- Simple type definitions START-->
+	<xsd:simpleType name="NonBindingExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A simple marker type, used to indicate that an extending type can be used as a non-binding reference in external XML documents.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:StringType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="MemberStateCodeType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A type for providing the 2-letter ISO code a a Member State. The following values are expected:
+			AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HR, HU, IE, LT, LU, LV, MT, NL, PL, PT, RO, SE, SI, SK
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:StringType">
+			<xsd:length value ="2"/>
+			<xsd:pattern value="[A-Z]{2}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Central Authority related simple types START-->
+	<xsd:simpleType name="CentralAuthorityTechnicalIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for the CentralAuthorityType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="8"/>
+			<xsd:pattern value="CA-[0-9]{2}-[A-Z]{2}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Central Authority related simple types END-->
+	<!-- Country  related simple types START-->
+	<xsd:simpleType name="CountryTechnicalIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for the CountryType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="13"/>
+			<xsd:pattern value="CO-[0-9]{2}-[0-9]{3}-[A-Z]{3}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CountryReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer internally an instance of a CountryType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDRefType">
+			<xsd:length value="13"/>
+			<xsd:pattern value="CO-[0-9]{2}-[0-9]{3}-[A-Z]{3}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CountryExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer in external documents an instance of a CountryType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:length value="13"/>
+			<xsd:pattern value="CO-[0-9]{2}-[0-9]{3}-[A-Z]{3}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CountryISO3166-2NumberType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The ISO-3166-2 country number (3-digit number)</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:StringType">
+			<xsd:length value="3"/>
+			<xsd:pattern value="[0-9]{3}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CountryISO3166-2CodeType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The ISO-3166-2 country code (3-letter code)</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:StringType">
+			<xsd:length value="3"/>
+			<xsd:pattern value="[A-Z]{3}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Country related simple types END-->
+	<!-- Currency related simple types START-->
+	<xsd:simpleType name="CurrencyTechnicalIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for the CurrencyType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="13"/>
+			<xsd:pattern value="CX-[0-9]{2}-[0-9]{3}-[A-Z]{3}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CurrencyReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer internally an instance of a CurrencyType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDRefType">
+			<xsd:length value="13"/>
+			<xsd:pattern value="CX-[0-9]{2}-[0-9]{3}-[A-Z]{3}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CurrencyExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer in external documents an instance of a CurrencyType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:length value="13"/>
+			<xsd:pattern value="CX-[0-9]{2}-[0-9]{3}-[A-Z]{3}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CurrencyISO4217NumberType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The ISO-4217 currency number</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:StringType">
+			<xsd:length value="3"/>
+			<xsd:pattern value="[0-9]{3}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CurrencyISO4217CodeType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The ISO-4217 currency code</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:StringType">
+			<xsd:length value="3"/>
+			<xsd:pattern value="[A-Z]{3}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Currency related simple types END-->
+	<!-- Country Sub Division related simple types START-->
+	<xsd:simpleType name="CountrySubdivisionTechnicalIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for the CountrySubdivisionType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:minLength value="10"/>
+			<xsd:maxLength value="12"/>
+			<xsd:pattern value="CS-[0-9]{2}-[A-Z]{2}-([0-9]{1,3}|[A-Z]{1,3})"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CountrySubdivisionExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer in external documents an instance of a CountrySubdivisionType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:minLength value="10"/>
+			<xsd:maxLength value="12"/>
+			<xsd:pattern value="CS-[0-9]{2}-[A-Z]{2}-([0-9]{1,3}|[A-Z]{1,3})"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CountrySubdivisionCodeType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The country subdivision code</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:minLength value="4"/>
+			<xsd:maxLength value="6"/>
+			<xsd:pattern value="[A-Z]{2}-([0-9]{1,3}|[A-Z]{1,3})"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Country Sub Division related simple types END-->
+	<!-- City related simple types START -->
+	<xsd:simpleType name="CityTechnicalIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for the CityType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="15"/>
+			<xsd:pattern value="CI-[0-9]{2}-[A-Z]{3}-T[0-9]{4}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CityExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer in external documents an instance of a CityType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:length value="15"/>
+			<xsd:pattern value="CI-[0-9]{2}-[A-Z]{3}-T[0-9]{4}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- City related simple types END-->
+	<!-- Offence related simple types START-->
+	<xsd:simpleType name="OffenceTechnicalIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for the OffenceCategoryType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="11"/>
+			<xsd:pattern value="O-[0-9]{2}-[0-9]{6}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="OffenceExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer in external documents an instance of a OffenceCategoryType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:length value="11"/>
+			<xsd:pattern value="O-[0-9]{2}-[0-9]{6}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="OffenceCategoryCodeType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The offence category code</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:StringType">
+			<xsd:pattern value="[0-9]{4} [0-9]{2}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Offence related simple types END-->
+	<!-- Level Of Participation related simple types START-->
+	<xsd:simpleType name="OffenceLevelOfParticipationTechnicalIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for the OffenceLevelOfParticipationType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="7"/>
+			<xsd:pattern value="LP-[0-9]{2}-[0A-Z]"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="OffenceLevelOfParticipationExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer in external documents an instance of a OffenceLevelOfParticipationType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:length value="7"/>
+			<xsd:pattern value="LP-[0-9]{2}-[0A-Z]"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Level Of Participation related simple types END-->
+	<!-- Level Of Completion related simple types START-->
+	<xsd:simpleType name="OffenceLevelOfCompletionTechnicalIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for the OffenceLevelOfCompletion</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="7"/>
+			<xsd:pattern value="LC-[0-9]{2}-[0A-Z]"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="OffenceLevelOfCompletionExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer in external documents an instance of a OffenceLevelOfCompletion</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:length value="7"/>
+			<xsd:pattern value="LC-[0-9]{2}-[0A-Z]"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Level Of Completion related simple types END-->
+	<!-- Sanction related simple types START-->
+	<xsd:simpleType name="SanctionTechnicalIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for the SanctionCategoryType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="11"/>
+			<xsd:pattern value="S-[0-9]{2}-[0-9]{6}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="SanctionExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer in external documents an instance of a SanctionCategoryType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:length value="11"/>
+			<xsd:pattern value="S-[0-9]{2}-[0-9]{6}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Sanction related simple types END-->
+	<!-- Sanction Alternative types simple types START-->
+	<xsd:simpleType name="SanctionAlternativeTypeTechnicalIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for the SanctionAlternativeType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="8"/>
+			<xsd:pattern value="SAT-[0-9]{2}-[A-Z]{1}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="SanctionAlternativeTypeExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer in external documents an instance of a SanctionAlternativeType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:length value="8"/>
+			<xsd:pattern value="SAT-[0-9]{2}-[A-Z]{1}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Sanction Alternative types simple types END-->
+	<!-- Type of suspension related simple types START-->
+	<xsd:simpleType name="SanctionTypeOfSuspensionTechnicalIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for the SanctionTypeOfSuspensionType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="6"/>
+			<xsd:pattern value="S-[0-9]{2}-[A-Z]{1}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="SanctionTypeOfSuspensionExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer in external documents an instance of a SanctionTypeOfSuspensionType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:length value="6"/>
+			<xsd:pattern value="S-[0-9]{2}-[A-Z]{1}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Type of suspension related simple types END-->
+	<!-- Nature of sanction related simple types START-->
+	<xsd:simpleType name="SanctionNatureTechnicalIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for the SanctionNatureType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="6"/>
+			<xsd:pattern value="N-[0-9]{2}-[0A-Z]{1}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="SanctionNatureExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer in external documents an instance of a SanctionNatureType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:length value="6"/>
+			<xsd:pattern value="N-[0-9]{2}-[0A-Z]{1}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Nature of sanction related simple types END-->
+	<!-- Request purpose related simple types START-->
+	<xsd:simpleType name="RequestPurposeTechnicalIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for the RequestPurposeType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="11"/>
+			<xsd:pattern value="P-[0-9]{2}-[0-9]{6}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RequestPurposeExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer in external documents an instance of a RequestPurposeType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:length value="11"/>
+			<xsd:pattern value="P-[0-9]{2}-[0-9]{6}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RequestPurposeCategoryCodeType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The request purpose category code</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:StringType">
+			<xsd:length value="3"/>
+			<xsd:pattern value="[0-9]{3}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Request purpose related simple types END-->
+	<!-- Sanction to sanction relationship related simple types START-->
+	<xsd:simpleType name="SanctionToSanctionsRelationTypeTechnicalIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for the SanctionToSanctionsRelationshipType.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="9"/>
+			<xsd:pattern value="SSR-[0-9]{2}-[0-9]{2}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="SanctionToSanctionsRelationTypeExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer in external documents an instance of a SanctionToSanctionsRelationshipType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:length value="9"/>
+			<xsd:pattern value="SSR-[0-9]{2}-[0-9]{2}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="SanctionToSanctionsRelationTypeCodeType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The code of the sanction to sanctions relationship.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:StringType">
+			<xsd:length value="7"/>
+			<xsd:pattern value="SSR-[A-Z]{3}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Sanction to sanction relationship related simple types START-->
+	<!-- Identification document simple types START-->
+	<xsd:simpleType name="IdentificationDocumentCategoryTechnicalIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for the IdentificationDocumentCategoryType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="9"/>
+			<xsd:pattern value="ID-[0-9]{2}-[0-9]{3}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="IdentificationDocumentCategoryExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer in external documents an instance of a IdentificationDocumentCategoryType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:length value="9"/>
+			<xsd:pattern value="ID-[0-9]{2}-[0-9]{3}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Identification document simple types END-->
+	<!-- Change of conviction related simple types START-->
+	<xsd:simpleType name="DecisionChangeTypeTechnicalIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for the DecisionChangeType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="8"/>
+			<xsd:pattern value="DCH-[0-9]{2}-[A-Z]"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="DecisionChangeTypeExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer in external documents an instance of a DecisionChangeType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:length value="8"/>
+			<xsd:pattern value="DCH-[0-9]{2}-[A-Z]"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Change of conviction related simple types END-->
+	<!-- Request Response Type related simple types START -->
+	<xsd:simpleType name="RequestResponseTypeTechnicalIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for the RequestResponseType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="9"/>
+			<xsd:pattern value="RRT-[0-9]{2}-[0-9]{2}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RequestResponseTypeExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer in external documents an instance of a RequestResponseType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:length value="9"/>
+			<xsd:pattern value="RRT-[0-9]{2}-[0-9]{2}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RequestResponseTypeCodeType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The request response code</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="5"/>
+			<xsd:pattern value="RRT-[0-9]{1}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Request Response Type related simple types END -->
+	<!-- Notification Response Type related simple types START -->
+	<xsd:simpleType name="NotificationResponseTypeTechnicalIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for the NotificationResponseType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="9"/>
+			<xsd:pattern value="NRT-[0-9]{2}-[0-9]{2}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NotificationResponseTypeExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer in external documents an instance of a NotificationResponseType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:length value="9"/>
+			<xsd:pattern value="NRT-[0-9]{2}-[0-9]{2}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NotificationResponseTypeCodeType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The notification response code</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="5"/>
+			<xsd:pattern value="NRT-[0-9]{1}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Request Response Type related simple types END -->
+	<!-- Request Additional Information Response Type related simple types START -->
+	<xsd:simpleType name="RequestAdditionalInfoTypeTechnicalIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for the RequestAdditionalInfoResponseType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="9"/>
+			<xsd:pattern value="ART-[0-9]{2}-[0-9]{2}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RequestAdditionalInfoTypeExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer in external documents an instance of a RequestAdditionalInfoResponseType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:length value="9"/>
+			<xsd:pattern value="ART-[0-9]{2}-[0-9]{2}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RequestAdditionalInfoTypeCodeType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The request additional info response code</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="5"/>
+			<xsd:pattern value="ART-[0-9]{1}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Request Response Type related simple types END -->
+	<!-- Functional Error Type related simple types START -->
+	<xsd:simpleType name="FunctionalErrorCodeType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The functional error code</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="8"/>
+			<xsd:pattern value="FE-[0-9]{5}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Functional Error Type related simple types END -->
+	<!-- Requesting Authority Type related simple types START -->
+	<xsd:simpleType name="RequestingAuthorityTypeTechnicalIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The requesting authority type unique identifier</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="8"/>
+			<xsd:pattern value="RAT-[0-9]{2}-[A-Z]"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RequestingAuthorityTypeExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type used to refer in external documents an instance of a RequestingAuthorityType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:length value="8"/>
+			<xsd:pattern value="RAT-[0-9]{2}-[A-Z]"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Requesting Authority  related simple types END -->
+	<!-- Simple type definitions END -->
+	<!-- Generic complex type definitions START-->
+	<xsd:complexType name="EntityType" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This is the base entity from which all other entities for common reference tables are derived. This entity is by definition abstract, thus no instances can be created.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:annotation>
+				<xsd:documentation xml:lang="en">Please note that the names used in the definition of this entity are considered without context, since this entity is abstract and thus are not prefixed with the entity name.</xsd:documentation>
+			</xsd:annotation>
+			<xsd:element name="ValidFrom" type="commons:StrictDateType" default="1800-01-01"/>
+			<xsd:element name="ValidTo" type="commons:StrictDateType" default="2999-12-31"/>
+			<!-- START: Changing the type to "MultilingualTextType400Chars", limiting the element's value to 400 chars (since v0.16 of this file) -->
+			<xsd:element name="Name" type="commons:MultilingualTextType400Chars"/>
+			<!-- END -->
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- Generic complex type definitions END-->
+	<!-- Common Reference Tables entitties type definitions START-->
+	<xsd:complexType name="CentralAuthorityType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the official central authorities of the Member States.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:EntityType">
+				<xsd:sequence>
+					<xsd:element name="CentralAuthorityTechnicalIdentifier" type="crt:CentralAuthorityTechnicalIdentifierType"/>
+					<xsd:element name="CentralAuthorityMemberStateCode" type="crt:MemberStateCodeType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="LanguageType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the official languages of the Member States.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:EntityType">
+				<xsd:sequence>
+					<xsd:element name="LanguageISO639-1Code" type="commons:LanguageISO639-1CodeType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="CountryType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of Countries based on ISO-3166</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:EntityType">
+				<xsd:sequence>
+					<xsd:element name="CountryTechnicalIdentifier" type="crt:CountryTechnicalIdentifierType"/>
+					<xsd:element name="CountryISO3166-2Code" type="crt:CountryISO3166-2CodeType"/>
+					<xsd:element name="CountryISO3166-2Number" type="crt:CountryISO3166-2NumberType"/>
+					<!-- START: Changing the type to "MultilingualTextType400Chars", limiting the element's value to 400 chars (since v0.16 of this file) -->
+					<xsd:element name="CountryRemark" type="commons:MultilingualTextType400Chars" minOccurs="0"/>
+					<!-- END -->
+					<xsd:element name="CountryUsedForNationality" type="commons:BooleanType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="CurrencyType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the national currencies based on ISO-4217 standard of the Member States.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:EntityType">
+				<xsd:sequence>
+					<xsd:element name="CurrencyTechnicalIdentifier" type="crt:CurrencyTechnicalIdentifierType"/>
+					<xsd:element name="CurrencyISO4217Code" type="crt:CurrencyISO4217CodeType"/>
+					<xsd:element name="CurrencyISO4217Number" type="crt:CurrencyISO4217NumberType"/>
+					<xsd:element name="CurrencyUsedInCountry" type="crt:CountryReferenceType" maxOccurs="unbounded"/>
+					<xsd:element name="CurrencyReplacedBy" type="crt:CurrencyReferenceType" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="CountrySubdivisionType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the Member States subdivisions based on ISO 3166-2 standard</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:EntityType">
+				<xsd:sequence>
+					<xsd:element name="CountrySubdivisionTechnicalIdentifier" type="crt:CountrySubdivisionTechnicalIdentifierType"/>
+					<xsd:element name="CountrySubdivisionCode" type="crt:CountrySubdivisionCodeType"/>
+					<xsd:element name="CountrySubdivisionType">
+						<xsd:simpleType>
+							<xsd:restriction base="commons:StringType">
+								<xsd:enumeration value="Autonomous Region"/>
+								<xsd:enumeration value="Autonomous City"/>
+								<xsd:enumeration value="Autonomous Community"/>
+								<xsd:enumeration value="Council Area"/>
+								<xsd:enumeration value="Country"/>
+								<xsd:enumeration value="Department"/>
+								<xsd:enumeration value="District"/>
+								<xsd:enumeration value="District Council Area"/>
+								<xsd:enumeration value="Federal Land"/>
+								<xsd:enumeration value="Local Council"/>
+								<xsd:enumeration value="Metropolitan Department"/>
+								<xsd:enumeration value="Municipality"/>
+								<xsd:enumeration value="Province"/>
+								<xsd:enumeration value="Region"/>
+								<xsd:enumeration value="State"/>
+								<xsd:enumeration value="Unitary Authority"/>
+								<xsd:enumeration value="County"/>
+								<xsd:enumeration value="Administrative Region"/>
+								<xsd:enumeration value="Overseas Department"/>
+								<xsd:enumeration value="Overseas Territory"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="CountrySubdivisionMemberState" type="crt:MemberStateCodeType"/>
+					<xsd:element name="CountrySubdivisionToCountry" type="crt:CountryReferenceType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="CityType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the most important/common cities in the 27 Member States</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:EntityType">
+				<xsd:sequence>
+					<xsd:element name="CityTechnicalIdentifier" type="crt:CityTechnicalIdentifierType"/>
+					<xsd:element name="CityCountry" type="crt:CountryReferenceType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="AbstractCommonCategoryType" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>The abstract parent element of all common category types supporting an "open" category and sub-categories</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:EntityType">
+				<xsd:sequence>
+					<xsd:element name="CategoryIsOpen" type="commons:BooleanType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="OffenceCategoryType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the offences categories as contained in the ANNEX A of the Council Decision 2009/316/JHA</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:AbstractCommonCategoryType">
+				<xsd:sequence>
+					<xsd:element name="OffenceTechnicalIdentifier" type="crt:OffenceTechnicalIdentifierType"/>
+					<xsd:element name="OffenceCategoryCode" type="crt:OffenceCategoryCodeType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="SanctionCategoryType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the sanctions categories as contained in the ANNEX A of the Council Decision 2009/316/JHA</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:AbstractCommonCategoryType">
+				<xsd:sequence>
+					<xsd:element name="SanctionTechnicalIdentifier" type="crt:SanctionTechnicalIdentifierType"/>
+					<xsd:element name="SanctionCategory">
+						<xsd:simpleType>
+							<xsd:restriction base="commons:StringType">
+								<xsd:pattern value="[0-9]{4,5}"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="AbstractCategorisedType" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>The abstract parent element of all cimple category types, using a category code.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:EntityType">
+				<xsd:sequence>
+					<xsd:element name="Category">
+						<xsd:simpleType>
+							<xsd:restriction base="commons:StringType">
+								<xsd:minLength value="1"/>
+								<xsd:maxLength value="3"/>
+								<xsd:pattern value="[0A-Za-z]{1,3}"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="OffenceLevelOfParticipationType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the categories of the level of participation of the offence as contained in the ANNEX A of the Council Decision 2009/316/JHA</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:AbstractCategorisedType">
+				<xsd:sequence>
+					<xsd:element name="OffenceLevelOfParticipationTechnicalIdentifier" type="crt:OffenceLevelOfParticipationTechnicalIdentifierType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="SanctionAlternativeType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the types of sanction alternatives as contained in the ANNEX B of the Council Decision 2009/316/JHA</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:AbstractCategorisedType">
+				<xsd:sequence>
+					<xsd:element name="SanctionAlternativeTypeTechnicalIdentifier" type="crt:SanctionAlternativeTypeTechnicalIdentifierType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="OffenceLevelOfCompletionType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the categories of the level of completion of the offence as contained in the ANNEX B of the Council Decision 2009/316/JHA</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:AbstractCategorisedType">
+				<xsd:sequence>
+					<xsd:element name="OffenceLevelOfCompletionTechnicalIdentifier" type="crt:OffenceLevelOfCompletionTechnicalIdentifierType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="SanctionTypeOfSuspensionType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the sanction suspension types as contained in the ANNEX B of the Council Decision 2009/316/JHA</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:AbstractCategorisedType">
+				<xsd:sequence>
+					<xsd:element name="SanctionTypeOfSuspensionTechnicalIdentifier" type="crt:SanctionTypeOfSuspensionTechnicalIdentifierType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="SanctionNatureType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the sanction nature (penalty/measure) as contained in the ANNEX B of the Council Decision 2009/316/JHA</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:AbstractCategorisedType">
+				<xsd:sequence>
+					<xsd:element name="SanctionNatureTechnicalIdentifier" type="crt:SanctionNatureTechnicalIdentifierType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RequestPurposeCategoryType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the categories of purposes of requests </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:AbstractCommonCategoryType">
+				<xsd:sequence>
+					<xsd:element name="RequestPurposeTechnicalIdentifier" type="crt:RequestPurposeTechnicalIdentifierType"/>
+					<xsd:element name="RequestPurposeCategoryCode" type="crt:RequestPurposeCategoryCodeType"/>
+					<xsd:element name="RequestPurposeSubcategoryCode" type="crt:RequestPurposeCategoryCodeType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="IdentificationDocumentCategoryType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the most common categories of identification documents used in the 27 Member States </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:EntityType">
+				<xsd:sequence>
+					<xsd:element name="IdentificationDocumentCategoryTechnicalIdentifier" type="crt:IdentificationDocumentCategoryTechnicalIdentifierType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="DecisionChangeType">
+		<xsd:annotation>
+			<xsd:documentation>A representation of the possible types of changes brought by a decisionon a conviction</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:AbstractCategorisedType">
+				<xsd:sequence>
+					<xsd:element name="DecisionChangeTypeTechnicalIdentifier" type="crt:DecisionChangeTypeTechnicalIdentifierType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RequestResponseType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the possible types of responses to transmitted requests</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:EntityType">
+				<xsd:sequence>
+					<xsd:element name="RequestResponseTypeTechnicalIdentifier" type="crt:RequestResponseTypeTechnicalIdentifierType"/>
+					<xsd:element name="RequestResponseTypeCode" type="crt:RequestResponseTypeCodeType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="SanctionToSanctionsRelationshipType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the possible types of sanction to sanctions relationships</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:EntityType">
+				<xsd:sequence>
+					<xsd:element name="SanctionToSanctionsRelationTypeTechnicalIdentifier" type="crt:SanctionToSanctionsRelationTypeTechnicalIdentifierType"/>
+					<xsd:element name="SanctionToSanctionsRelationTypeCode" type="crt:SanctionToSanctionsRelationTypeCodeType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="NotificationResponseType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the possible types of responses to transmitted notifications</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:EntityType">
+				<xsd:sequence>
+					<xsd:element name="NotificationResponseTypeTechnicalIdentifier" type="crt:NotificationResponseTypeTechnicalIdentifierType"/>
+					<xsd:element name="NotificationResponseTypeCode" type="crt:NotificationResponseTypeCodeType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RequestAdditionalInfoResponseType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the possible types of responses to transmitted requests for additional information</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:EntityType">
+				<xsd:sequence>
+					<xsd:element name="RequestAdditionalInfoTypeTechnicalIdentifier" type="crt:RequestAdditionalInfoTypeTechnicalIdentifierType"/>
+					<xsd:element name="RequestAdditionalInfoTypeCode" type="crt:RequestAdditionalInfoTypeCodeType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="FunctionalErrorType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the functional errors emerging in the ECRIS information exchanges</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:EntityType">
+				<xsd:sequence>
+					<xsd:element name="FunctionalErrorCode" type="crt:FunctionalErrorCodeType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="FaultType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the soap fault codes with their descriptions</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:EntityType">
+				<xsd:sequence>
+					<xsd:element name="FaultCode" type="commons:NCNameType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RequestingAuthorityType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A representation of the requesting authority types with their descriptions</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="crt:AbstractCategorisedType">
+				<xsd:sequence>
+					<xsd:element name="RequestingAuthorityTypeTechnicalIdentifier" type="crt:RequestingAuthorityTypeTechnicalIdentifierType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="CommonReferenceTable">
+		<xsd:annotation>
+			<xsd:documentation>A representation of the structure containing all common reference tables</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="CentralAuthorities">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="CentralAuthority" type="crt:CentralAuthorityType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="Languages">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="Language" type="crt:LanguageType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="Countries">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="Country" type="crt:CountryType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="Currencies">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="Currency" type="crt:CurrencyType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="CountrySubdivisions">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="CountrySubdivision" type="crt:CountrySubdivisionType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="Cities">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="City" type="crt:CityType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="OffenceCategories">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="OffenceCategory" type="crt:OffenceCategoryType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="OffenceLevelsOfParticipation">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="OffenceLevelOfParticipation" type="crt:OffenceLevelOfParticipationType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="OffenceLevelsOfCompletion">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="OffenceLevelOfCompletion" type="crt:OffenceLevelOfCompletionType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="SanctionCategories">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="SanctionCategory" type="crt:SanctionCategoryType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="SanctionTypesOfSuspension">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="SanctionTypeOfSuspension" type="crt:SanctionTypeOfSuspensionType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="SanctionNatures">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="SanctionNature" type="crt:SanctionNatureType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="RequestPurposeCategories">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="RequestPurposeCategory" type="crt:RequestPurposeCategoryType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="IdentificationDocumentCategories">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="IdentificationDocumentCategory" type="crt:IdentificationDocumentCategoryType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="DecisionChangeTypes">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="DecisionChangeType" type="crt:DecisionChangeType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="RequestResponses">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="RequestResponse" type="crt:RequestResponseType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="NotificationResponses">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="NotificationResponse" type="crt:NotificationResponseType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="RequestAdditionalInfoResponses">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="RequestAdditionalInfoResponse" type="crt:RequestAdditionalInfoResponseType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="FunctionalErrors">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="FunctionalError" type="crt:FunctionalErrorType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="Faults">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="Fault" type="crt:FaultType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="SanctionToSanctionsRelationshipTypes">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="SanctionToSanctionsRelationshipType" type="crt:SanctionToSanctionsRelationshipType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="RequestingAuthorityTypes">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="RequestingAuthorityType" type="crt:RequestingAuthorityType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="SanctionAlternativeTypes">
+					<xsd:complexType>
+						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="SanctionAlternativeType" type="crt:SanctionAlternativeType"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- Common Reference Tables entitties type definitions END-->
+</xsd:schema>

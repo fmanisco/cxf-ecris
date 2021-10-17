@@ -1,0 +1,1079 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ECRIS Technical Specifications – Detailed Technical Specifications
+Definition of ECRIS domain model
+
+Author: iLICONN – Intrasoft International S.A.
+Owner: European Commission – DG Justice
+Issue Date: 14/03/2013
+Internal Version of File: 0.20
+Approval Status: Final
+
+File Authors:
+Panos ATHANASIOU (iLICONN – Intrasoft International S.A.)
+Ludovic COLACINO DIAS (iLICONN – Intrasoft International S.A.)
+
+File History:
+0.1 - 25/10/2010 - PAT - Initial draft
+0.2 - 02/11/2010 - PAT, LCO - Implementation of comments after internal revision
+0.3 - 05/11/2010 - PAT, LCO - Update based on v0.8 of the Business Analysis document
+0.4 - 07/11/2010 - LCO - Revision
+0.5 - 08/11/2010 - LCO - Implementation of comments after internal revision
+0.6 - 08/11/2010 - PAT - Minor fixes
+0.7 - 09/11/2010 - LCO - Revision for delivery
+0.8 - 24/11/2010 - PAT - Updates based on comments received from Member States
+0.9 - 25/11/2010 - LCO - Revision for delivery
+0.10 - 17/12/2010 - PAT - Various updates based on agreements found during Expert Group Review meeting 01-Dec-2010 and COPEN meeting 10-Dec-2010
+0.11 - 20/12/2010 - LCO - Revision for delivery of final version
+0.12 - 25/02/2011 - PAT - Various updates based on Business Analysis v1.4
+0.13 - 28/02/2011 - PAT - Minor corrections
+0.14 - 28/02/2011 - LCO - Minor fixes (compliant with Business Analysis v1.4)
+0.15 - 01/03/2011 - PAT - Minor fix (compliant with Business Analysis v1.4)
+0.16 - 06/06/2011 - LCO - Adding new property "SanctionDurationSuspendedPart" in element "SanctionSuspensionType" - aligned with Business Analysis v1.5
+0.17 - 04/10/2011 - PAT - Removed PersonFormerNameType, updated PersonType, ConvictionType, NJRConvictionExternalReferenceType, removed PersonParentNameType
+0.18 - 06/12/2011 - PAT - Fix: former names now support multiple instances
+0.19 - 08/03/2013 - LCO - Implementing agreements reached during Expert Group meeting 19/20 February 2013
+						  Adding max length limitations to several XML elements.
+						  Changing the type of all remarks fields to a base type that does not collapse white-spaces (i.e. the base type commons:StringType is made more restrictive)
+0.20 - 14/03/2013 - LCO - Fixing definition of element "DecidingAuthorityCode", limiting it also to 50 characters
+-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:commons="http://ec.europa.eu/ECRIS/commons-v1.0" xmlns:dm="http://ec.europa.eu/ECRIS/domain-model-v1.0" xmlns:crt="http://ec.europa.eu/ECRIS/common-reference-tables-v1.0" targetNamespace="http://ec.europa.eu/ECRIS/domain-model-v1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xsd:import namespace="http://ec.europa.eu/ECRIS/commons-v1.0" schemaLocation="commons-v1.0.xsd"/>
+	<xsd:import namespace="http://ec.europa.eu/ECRIS/common-reference-tables-v1.0" schemaLocation="common-reference-tables-v1.0.xsd"/>
+	<!-- Simple structural type definitions START-->
+	<xsd:simpleType name="ConvictionIDType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for conviction elements. This identifier must be unique within the message in which the conviction is contained.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="20"/>
+			<xsd:pattern value="[A-Z]{2}-C-[0-9]{15}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ConvictionReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The reference type for convictions.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDRefType">
+			<xsd:length value="20"/>
+			<xsd:pattern value="[A-Z]{2}-C-[0-9]{15}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ConvictionExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The reference type for convictions.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:length value="20"/>
+			<xsd:pattern value="[A-Z]{2}-C-[0-9]{15}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NJRConvictionExternalReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The reference type for convictions.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="crt:NonBindingExternalReferenceType">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="20"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="OffenceIDType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for offence elements. This identifier must be unique within the message in which the offence is contained.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="7"/>
+			<xsd:pattern value="O-[0-9]{5}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="OffenceReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The reference type for offences</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDRefType">
+			<xsd:length value="7"/>
+			<xsd:pattern value="O-[0-9]{5}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="DecisionIDType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for decision elements. This identifier must be unique within the message in which the decision is contained.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="7"/>
+			<xsd:pattern value="D-[0-9]{5}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="DecisionReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The reference type for decisions</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDRefType">
+			<xsd:length value="7"/>
+			<xsd:pattern value="D-[0-9]{5}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="SanctionIDType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The technical identifier for sanction elements. This identifier must be unique within the message in which the sanction is contained.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="7"/>
+			<xsd:pattern value="S-[0-9]{5}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="SanctionReferenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The reference type for sanctions</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDRefType">
+			<xsd:length value="7"/>
+			<xsd:pattern value="S-[0-9]{5}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Simple structural type definitions END-->
+	<!-- Domain Model related type definitions START-->
+	<xsd:element name="Forename" type="commons:NameTextType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The person's first name.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Surname" type="commons:NameTextType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The person's last name.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="SecondSurname" type="commons:NameTextType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The person's second last name.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:simpleType name="SexType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The definition of types of human genders, based on the ISO 5218 standard. The values are restricted to 0 = unknown, 1 = male and 2 = female.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IntegerType">
+			<xsd:enumeration value="0"/>
+			<xsd:enumeration value="1"/>
+			<xsd:enumeration value="2"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:complexType name="AbstractNameType" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The abstract base definition of person name structures.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="dm:Forename" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="dm:Surname" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="dm:SecondSurname" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="FullName" type="commons:FullNameTextType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>The person's full-name (First name and last name combined)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="PlaceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents a physical location and is used for transmitting information such as the birth place of a person or the place of an address.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="PlaceCountryReference" type="crt:CountryExternalReferenceType" default="CO-00-999-XXX"/>
+			<xsd:element name="PlaceCountrySubdivisionReference" type="crt:CountrySubdivisionExternalReferenceType" minOccurs="0"/>
+			<xsd:element name="PlaceTownReference" type="crt:CityExternalReferenceType" minOccurs="0"/>
+			<!-- START: limiting max length to 200 chars (v0.19 of this file) -->
+			<xsd:element name="PlaceTownName" type="commons:MultilingualTextType200Chars"/>
+			<!-- END -->
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="AbstractNationalCategoriesSupportingEntityType" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The abstract base definition for entities supporting national categories (i.e. offences and sanctions).</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<!-- START: limiting to string of max 50 chars (v0.19 of this file) -->
+			<xsd:element name="NationalCategoryCode" type="commons:RestrictedStringType50Chars" minOccurs="0">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The code of the entity as known on the national level of the convicting Member State</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<!-- START: limiting to string of max 400 chars (v0.19 of this file) -->
+			<xsd:element name="NationalCategoryTitle" type="commons:MultilingualTextType400Chars">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The title of the entity as known on the national level of the convicting Member State</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<!-- START: using a string type not collapsing white-space characters (v0.19 of this file) -->
+			<xsd:element name="Remarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Any additional valuable remarks related to this entity</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- Domain Model related type definitions END -->
+	<!-- Person related type definitions START-->
+	<xsd:complexType name="PersonNameType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents the structure containing the particulars for a person's name.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="dm:AbstractNameType">
+				<xsd:sequence>
+					<xsd:element ref="dm:Forename" />
+					<xsd:element ref="dm:Surname" />
+					<xsd:element ref="dm:SecondSurname" minOccurs="0" />
+					<xsd:element name="FullName" type="commons:FullNameTextType" minOccurs="0" >
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The unstructured form of the complete name (grouping first and last names)</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="PersonAddressType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents an address of a person.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="AddressPlace" type="dm:PlaceType"/>
+			<!-- START: modified base type to string of limited lengths (v0.19 of this file) -->
+			<xsd:element name="AddressStreet" type="commons:MultilingualTextType400Chars" minOccurs="0"/>
+			<xsd:element name="AddressHouseNumber" type="commons:MultilingualTextType50Chars" minOccurs="0"/>
+			<xsd:element name="AddressPostCode" type="commons:MultilingualTextType50Chars" minOccurs="0"/>
+			<!-- END -->
+			<xsd:element name="AddressFull" type="commons:UncollapsedMultilingualTextType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="IdentificationDocumentType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents the information of an identification document of a person.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="IdentificationDocumentCategoryReference" type="crt:IdentificationDocumentCategoryExternalReferenceType"/>
+			<!-- START: limiting max lengths of XML elements (v0.19 of this file) -->
+			<xsd:element name="IdentificationDocumentType" type="commons:MultilingualTextType50Chars"/>
+			<xsd:element name="IdentificationDocumentNumber" type="commons:RestrictedStringType50Chars" default="UNKNOWN"/>
+			<xsd:element name="IdentificationDocumentIssuingAuthority" type="commons:MultilingualTextType400Chars" minOccurs="0"/>
+			<!-- END -->
+			<xsd:element name="IdentificationDocumentIssuingDate" type="commons:DateType" minOccurs="0"/>
+			<xsd:element name="IdentificationDocumentValidUntil" type="commons:DateType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="AbstractPersonType" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents an abstract definition for all person types.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="PersonName" type="dm:PersonNameType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The name of the person.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PersonSex" type="dm:SexType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The gender of the person.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PersonBirthDate" type="commons:DateType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The date of birth of the person.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PersonBirthPlace" type="dm:PlaceType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The location of birth of the person.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PersonNationalityReference" type="crt:CountryExternalReferenceType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The nationality of the person, expressed as a reference to a country.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PersonFormerForename" type="commons:NameTextType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The person's former forename.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PersonFormerSurname" type="commons:NameTextType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The person's former surname.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PersonFormerSecondSurname" type="commons:NameTextType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The person's former second surname.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		    <xsd:element name="PersonFatherForename" type="commons:NameTextType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The person's former forename.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		    <xsd:element name="PersonFatherSurname" type="commons:NameTextType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The person's former forename.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>			
+		    <xsd:element name="PersonFatherSecondSurname" type="commons:NameTextType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The person's former forename.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		    <xsd:element name="PersonMotherForename" type="commons:NameTextType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The person's former forename.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		    <xsd:element name="PersonMotherSurname" type="commons:NameTextType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The person's former forename.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>			
+		    <xsd:element name="PersonMotherSecondSurname" type="commons:NameTextType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The person's former forename.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>			
+			<!-- START: limiting length of string to 50 chars (v0.19 of this file) -->
+			<xsd:element name="PersonIdentityNumber" type="commons:RestrictedStringType50Chars" minOccurs="0">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The national identification number of the person.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PersonIdentificationDocument" type="dm:IdentificationDocumentType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The information of the person’s identification document.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PersonAddress" type="dm:PersonAddressType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The address of the person.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PersonAlias" type="dm:PersonAliasType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">An alternative nominal identity under which the person is also known.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<!-- START: using a string type not collapsing white-space characters (v0.19 of this file) -->
+			<xsd:element name="PersonRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Any additional valuable remarks related to the person.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="PersonType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents the identity information of a person being the subject of the various ECRIS messages.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="dm:AbstractPersonType">
+				<xsd:sequence>
+					<xsd:element name="PersonName" type="dm:PersonNameType">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The name of the person.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonSex" type="dm:SexType" default="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The gender of the person.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonBirthDate" type="commons:DateType">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The date of birth of the person.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonBirthPlace" type="dm:PlaceType">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The location of birth of the person.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonNationalityReference" type="crt:CountryExternalReferenceType" default="CO-00-999-XXX" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The nationality of the person, expressed as a reference to a country.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonFormerForename" type="commons:NameTextType" minOccurs="0" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The person's former forename.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonFormerSurname" type="commons:NameTextType" minOccurs="0" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The person's former surname.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonFormerSecondSurname" type="commons:NameTextType" minOccurs="0" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The person's former second surname.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonFatherForename" type="commons:NameTextType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The forename of the person's father.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonFatherSurname" type="commons:NameTextType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The surname of the person's father.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>			
+					<xsd:element name="PersonFatherSecondSurname" type="commons:NameTextType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The second surname of the person's father.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonMotherForename" type="commons:NameTextType" minOccurs="0" >
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The forename of the person's mother.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonMotherSurname" type="commons:NameTextType" minOccurs="0" >
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The surname of the person's mother.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>			
+					<xsd:element name="PersonMotherSecondSurname" type="commons:NameTextType" minOccurs="0" >
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The second surname of the person's mother.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<!-- START: limiting length of string to 50 chars (v0.19 of this file) -->
+					<xsd:element name="PersonIdentityNumber" type="commons:RestrictedStringType50Chars" minOccurs="0">
+					<!-- END -->
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The national identification number of the person.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonIdentificationDocument" type="dm:IdentificationDocumentType" minOccurs="0" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The information of the person’s identification document.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonAddress" type="dm:PersonAddressType" minOccurs="0" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The address of the person.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonAlias" type="dm:PersonAliasType" minOccurs="0" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">An alternative nominal identity under which the person is also known.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<!-- START: using a string type not collapsing white-space characters (v0.19 of this file) -->
+					<xsd:element name="PersonRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0">
+					<!-- END -->
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Any additional valuable remarks related to the person.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="PersonAliasType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents an alternative nominal identity for the person being the subject of the various ECRIS messages.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="dm:AbstractPersonType">
+				<xsd:sequence>
+					<xsd:element name="PersonName" type="dm:PersonNameType">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The name of the alias of the person.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonSex" type="dm:SexType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The gender of the alias of the person.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonBirthDate" type="commons:DateType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The date of birth of the alias of the person.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonBirthPlace" type="dm:PlaceType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The location of birth of the alias of the person.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonNationalityReference" type="crt:CountryExternalReferenceType" minOccurs="0" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The nationality of the alias of the person, expressed as a reference to a country.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonFatherForename" type="commons:NameTextType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The forename of the person's father.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonFatherSurname" type="commons:NameTextType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The surname of the person's father.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>			
+					<xsd:element name="PersonFatherSecondSurname" type="commons:NameTextType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The second surname of the person's father.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonMotherForename" type="commons:NameTextType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The forename of the person's mother.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonMotherSurname" type="commons:NameTextType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The surname of the person's mother.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>			
+					<xsd:element name="PersonMotherSecondSurname" type="commons:NameTextType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The second surname of the person's mother.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<!-- START: limiting length of string to 50 chars (v0.19 of this file) -->
+					<xsd:element name="PersonIdentityNumber" type="commons:RestrictedStringType50Chars" minOccurs="0">
+					<!-- END -->
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The national identification number of the alias of the person.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonIdentificationDocument" type="dm:IdentificationDocumentType" minOccurs="0" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The information of the identification document of the alias of the person.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonAddress" type="dm:PersonAddressType" minOccurs="0" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The address of the alias of the person.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<!-- START: using a string type not collapsing white-space characters (v0.19 of this file) -->
+					<xsd:element name="PersonRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0">
+					<!-- END -->
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Any additional valuable remarks related to the alias of the person.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- Person related type definitions END-->
+	<!-- Offence related type definitions START-->
+	<xsd:complexType name="OffenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type contains all the information on the offence that has been committed by the convicted person.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="dm:AbstractNationalCategoriesSupportingEntityType">
+				<xsd:sequence>
+					<xsd:element name="OffenceID" type="dm:OffenceIDType" nillable="false">
+						<xsd:annotation>
+							<xsd:documentation>The technical identifier of the offence. This identifier must be unique within the message in which the offence is contained.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="OffenceCommonCategoryReference" type="crt:OffenceExternalReferenceType" default="O-00-270000" nillable="false">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The category of the offence as defined by Annex A of the Council Decision 2009/316/JHA.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<!-- START: limiting max length to 400 chars (v0.19 of this file) -->
+					<xsd:element name="OffenceApplicableLegalProvisions" type="commons:RestrictedStringType400Chars" default="UNKNOWN">
+					<!-- END -->
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The references to the articles of the national laws of the convicting Member State that have been breached.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="OffenceStartDate" type="commons:DateType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The date when the convicted person started committing the offence.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="OffenceEndDate" type="commons:DateType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The date when the convicted person ceased committing the offence.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="OffencePlace" type="dm:PlaceType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The place where the offence happened.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<!-- START: limiting type to a positive integer of max 3 digits (v0.19 of this file) -->
+					<xsd:element name="OffenceNumberOfOccurrences" type="commons:RestrictedPositiveIntegerType3Digits" minOccurs="0">
+					<!-- END -->
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The number of times that the offence has been perpetrated by the convicted person during the elapsed time.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="OffenceIsContinuous" type="commons:YesNoUnknownStringEnumerationType">
+						<xsd:annotation>
+							<xsd:documentation>An element indicating whether the offence was perpetrated continuously during the given period of time instead of a well-defined number of times.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="OffenceLevelOfCompletionReference" type="crt:OffenceLevelOfCompletionExternalReferenceType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">A code describing the level of completion of the offence, as defined by the parameters in Annex A of the Council Decision 2009/316/JHA.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="OffenceLevelOfParticipationReference" type="crt:OffenceLevelOfParticipationExternalReferenceType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">A code describing the level of participation of the convicted person in the offence, as defined by the parameters in Annex A of the Council Decision 2009/316/JHA.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="OffenceResponsibilityExemption" type="commons:YesNoUnknownStringEnumerationType">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">A Boolean element describing whether the convicted person has been exempted from criminal responsibility. The value "true" corresponds to the parameter “S – Insanity or diminished responsibility” defined in Annex A of the Council Decision 2009/316/JHA.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="OffenceRecidivism" type="commons:YesNoUnknownStringEnumerationType">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">A Boolean element indicating whether the convicted person has performed the same or similar offences in the past. The value “true” corresponds to the parameter “R – Recidivism” as defined in Annex A of the Council Decision 2009/316/JHA.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- Offence related type definitions END-->
+	<!-- Sanction related type definitions START-->
+	<xsd:complexType name="AbstractPeriodType" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The abstract base definition for periods of time.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="PeriodStartDate" type="commons:StrictDateType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The date when the period starts</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PeriodDuration" type="commons:DurationType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The duration of the period</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PeriodEndDate" type="commons:StrictDateType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The date when period ends</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SanctionPeriodType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents the time-related terms of the execution of a sanction.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="dm:AbstractPeriodType">
+				<xsd:sequence>
+					<xsd:element name="PeriodStartDate" type="commons:StrictDateType" minOccurs="0"/>
+					<xsd:element name="PeriodDuration" type="commons:DurationType" minOccurs="0"/>
+					<xsd:element name="PeriodEndDate" type="commons:StrictDateType" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="SanctionSentencedPeriodType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents the sentenced time-related terms of the execution of a sanction.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="dm:AbstractPeriodType">
+				<xsd:sequence>
+					<xsd:element name="DurationExact" type="commons:YesNoUnknownStringEnumerationType">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">An element indicating whether the duration is defined exactly or not.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="SanctionSuspensionType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The specific terms of the suspension of all or part of the execution of a sanction.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="dm:AbstractPeriodType">
+				<xsd:sequence>
+					<xsd:element name="SanctionSuspensionTypeReference" type="crt:SanctionTypeOfSuspensionExternalReferenceType" default="S-00-Z">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The type of the suspension.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="SanctionDurationSuspendedPart" type="commons:DurationType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The duration of the part of the sanction being suspended.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="SanctionProbationDuration" type="commons:DurationType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The duration of the probation/supervision period.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="SanctionSuspensionPartiallySuspendedAmount" type="commons:PositiveDecimalType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The amount of the fine for which the payment is being suspended.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<!-- START: using a string type not collapsing white-space characters (v0.19 of this file) -->
+					<xsd:element name="SanctionSuspensionRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0">
+					<!-- END -->
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Any additional valuable remarks related to the suspension of the execution of all or part of the sanction.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="SanctionInterruptionType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The specific terms of the interruption/postponement of the execution of a sanction.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="dm:AbstractPeriodType">
+				<xsd:sequence>
+					<!-- START: using a string type not collapsing white-space characters (v0.19 of this file) -->
+					<xsd:element name="SanctionInterruptionRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0">
+					<!-- END -->
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Any additional valuable remarks related to the interruption/postponement of execution of the sanction.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="SanctionType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type contains all the information on the sanction to which the convicted person has been sentenced. In particular, it contains the specific terms of the sanction but carries also information about the enforcement of its execution.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="dm:AbstractNationalCategoriesSupportingEntityType">
+				<xsd:sequence>
+					<xsd:element name="SanctionID" type="dm:SanctionIDType" nillable="false">
+						<xsd:annotation>
+							<xsd:documentation>The technical identifier of the sanction. This identifier must be unique within the message in which the sanction is contained.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="SanctionTypeReference" type="crt:SanctionNatureExternalReferenceType" default="N-00-Z" nillable="false">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The specific type of the sanction (i.e. penalty or measure).</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="SanctionCommonCategoryReference" type="crt:SanctionExternalReferenceType" default="S-00-012000" nillable="false">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The category of the sanction as defined by Annex B of the Council Decision 2009/316/JHA.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="SanctionAlternativeTypeReference" type="crt:SanctionAlternativeTypeExternalReferenceType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">An indication of whether the sanction represents an alternative to another sanction.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<!-- START: limiting to a positive integer of max 3 digits (v0.19 of this file) -->
+					<xsd:element name="SanctionMultiplier" type="commons:RestrictedPositiveIntegerType3Digits" default="1">
+					<!-- END -->
+						<xsd:annotation>
+							<xsd:documentation>The number of times the specific sanction is being applied.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="SanctionIsSpecificToMinor" type="commons:YesNoUnknownStringEnumerationType">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">An indication of whether this sanction is specific to minors or not. The value “true” corresponds to the parameter “s – Penalty or measure specific to minors” as defined in Annex B of the Council Decision 2009/316/JHA.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="SanctionSentencedPeriod" type="dm:SanctionSentencedPeriodType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The period of time that the sanction is sentenced</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="SanctionExecutionPeriod" type="dm:SanctionPeriodType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The period of time for the execution of the sanction.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<!-- START: limiting to a positive integer of max 3 digits (v0.19 of this file) -->
+					<xsd:element name="SanctionNumberOfFines" type="commons:RestrictedPositiveIntegerType3Digits" minOccurs="0">
+					<!-- END -->
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The number of fines to be paid by the convicted person.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="SanctionAmountOfIndividualFine" type="commons:PositiveDecimalType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The amount of money of one fine.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="SanctionCurrencyOfFineReference" type="crt:CurrencyExternalReferenceType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The currency of the fine.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="SanctionSuspension" type="dm:SanctionSuspensionType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The terms of the suspension of all or part of the execution of this sanction.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="SanctionInterruption" type="dm:SanctionInterruptionType" minOccurs="0" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The terms of the interruption/postponement of the execution of this sanction.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- Sanction related type definitions END-->
+	<!-- Relationship definitions START-->
+	<xsd:complexType name="SanctionToOffencesRelationshipType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This types defines one-to-many relationships between one "sanction" and one or more "offence" entities.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="commons:AbstractRelationshipType">
+				<xsd:sequence>
+					<xsd:element name="Sanction" type="dm:SanctionReferenceType">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The source of the relationship. It must point to a valid "SanctionID" value.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Offence" type="dm:OffenceReferenceType" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The destination of the relationship. It must point to a valid "OffenceID" value.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="SanctionToSanctionsRelationshipType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This types defines one-to-many relationships between one "sanction" and one or more "saction" entities.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="commons:AbstractRelationshipType">
+				<xsd:sequence>
+					<xsd:element name="SourceSanction" type="dm:SanctionReferenceType">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The source of the relationship. It must point to a valid "SanctionID" value.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="DestinationSanction" type="dm:SanctionReferenceType" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The destination of the relationship. It must point to a valid "SanctionID" value.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+				<xsd:attribute name="relationshipTypeReference" type="crt:SanctionToSanctionsRelationTypeExternalReferenceType" use="required"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="DecisionToOffencesRelationshipType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This types defines one-to-many relationships between one "decision" and one or more "offence" entities.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="commons:AbstractRelationshipType">
+				<xsd:sequence>
+					<xsd:element name="Decision" type="dm:DecisionReferenceType">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The source of the relationship. It must point to a valid "DecisionID" value.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Offence" type="dm:OffenceReferenceType" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The destination of the relationship. It must point to a valid "OffenceID" value.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="DecisionToSanctionsRelationshipType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This types defines one-to-many relationships between one "decision" and one or more "sanction" entities.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="commons:AbstractRelationshipType">
+				<xsd:sequence>
+					<xsd:element name="Decision" type="dm:DecisionReferenceType">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The source of the relationship. It must point to a valid "DecisionID" value.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Sanction" type="dm:SanctionReferenceType" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The destination of the relationship. It must point to a valid "SanctionID" value.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- Relationship definitions END-->
+	<!-- Decision related type definitions START -->
+	<xsd:complexType name="DecisionType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This entity contains the specific information on a decision of a competent authority relative to the conviction of a natural person, which can be the decision of the original conviction itself or subsequent decisions modifying the conviction. It may relate to several offences and several sanctions..</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="DecisionID" type="dm:DecisionIDType">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The technical identifier for decision elements. This identifier must be unique within the message in which the conviction is contained.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DecisionChangeTypeReference" type="crt:DecisionChangeTypeExternalReferenceType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Indicates the type of change that is applied to the conviction by this decision.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DecisionDate" type="commons:StrictDateType" default="1800-01-01" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The date when the decision was issued.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DecisionFinalDate" type="commons:StrictDateType" default="1800-01-01" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The date when the decision becomes final and legally applicable.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DecisionDecidingAuthority" type="dm:DecidingAuthorityType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Information on the competent authority that issued this decision.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DecisionDeleteConvictionFromRegister" type="commons:YesNoUnknownStringEnumerationType">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">This property indicates whether the conviction related to this decision should be removed from the criminal records register of the convicted person or not.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<!-- START: using a string type not collapsing white-space characters (v0.19 of this file) -->
+			<xsd:element name="DecisionRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Additional valuable remarks related to this decision.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="DecidingAuthorityType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The authority issuing a conviction.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<!-- START: limiting to max length of 50 chars (v0.20 of this file) -->
+			<xsd:element name="DecidingAuthorityCode" type="commons:RestrictedStringType50Chars" minOccurs="0">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The code of the competent authority that decided on the conviction.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<!-- START: limiting to max length of 400 chars (v0.19 of this file) -->
+			<xsd:element name="DecidingAuthorityName" type="commons:MultilingualTextType400Chars">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The name of the competent authority that decided on the conviction.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- Decision related type definitions END-->
+	<!-- Conviction related type definitions START-->
+	<xsd:complexType name="ConvictionType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type contains all the information on the decision of a competent authority relative to the conviction of a natural person, including the offences committed and the sanctions to which the person has been sentenced.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="ConvictionID" type="dm:ConvictionIDType">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The technical identifier for conviction elements. This identifier must be unique within the message in which the conviction is contained.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ConvictionConvictingCountryReference" type="crt:CountryExternalReferenceType">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The country in which the conviction has been handed down.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<!-- START: limited to max 50 chars (v0.19 of this file) -->
+			<xsd:element name="ConvictionFileNumber" type="commons:RestrictedStringType50Chars" default="UNKNOWN">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The reference number of the decision in the national judicial system.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ConvictionDecisionDate" type="commons:StrictDateType" default="1800-01-01">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The date when the conviction was issued.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ConvictionDecisionFinalDate" type="commons:StrictDateType" default="1800-01-01">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The date when the conviction becomes final and legally applicable.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ConvictionDecidingAuthority" type="dm:DecidingAuthorityType">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Information on the competent authority that issued this conviction</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ConvictionNonCriminalRuling" type="commons:YesNoUnknownStringEnumerationType">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Boolean element that specifies whether the decision represents a non-criminal ruling or not.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ConvictionRetentionPeriodEndDate" type="commons:StrictDateType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The end date of the retention period for this conviction.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ConvictionIsTransmittable" type="commons:YesNoUnknownStringEnumerationType">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Boolean element indicating whether this conviction can be retransmitted when replying to requests for purposes other than criminal proceedings. The value "true" indicates that the conviction can be retransmitted.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<!-- START: using a string type not collapsing white-space characters (v0.19 of this file) -->
+			<xsd:element name="ConvictionRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Any additional valuable remarks related to this conviction.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ConvictionDecision" type="dm:DecisionType" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">This entity contains the specific information on a decision of a competent authority relative to the conviction of a natural person, which can be the decision of the original conviction itself or subsequent decisions modifying the conviction. It may relate to several offences and several sanctions.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ConvictionOffence" type="dm:OffenceType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">This entity contains all the information on the offence that has been committed by the convicted person.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ConvictionSanction" type="dm:SanctionType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">This entity contains all the information on the sanction to which the convicted person has been sentenced. In particular, it contains the specific terms of the sanction but carries also information about the enforcement of its execution.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ConvictionRelationship" type="commons:AbstractRelationshipType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">This entity can support all relationship types required within a conviction. The allowed realationship types for this entity in this context are: DecisionToOffencesRelationshipType, DecisionToSanctionsRelationshipType, SanctionToSanctionsRelationshipType and SanctionToOffencesRelationshipType. Using a different type than the ones allowed will trigger a functional error on the receiver's side</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- Conviction related type definitions END-->
+	<!-- Domain Model  type definitions END-->
+</xsd:schema>

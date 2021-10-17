@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ECRIS Technical Specifications – Detailed Technical Specifications
+Definition of ECRIS commons
+
+Author: iLICONN – Intrasoft International S.A.
+Owner: European Commission – DG Justice
+Issue Date: 14/03/2013
+Internal Version of File: 0.17
+Approval Status: Final
+
+File Authors:
+Panos ATHANASIOU (iLICONN – Intrasoft International S.A.)
+Ludovic COLACINO DIAS (iLICONN – Intrasoft International S.A.)
+
+File History:
+0.1 - 25/10/2010 - PAT - Initial draft
+0.2 - 02/11/2010 - PAT, LCO - Implementation of comments after internal revision
+0.3 - 05/11/2010 - PAT, LCO - Update based on v0.8 of the Business Analysis document
+0.4 - 07/11/2010 - LCO - Revision
+0.5 - 08/11/2010 - LCO - Implementation of comments after internal revision
+0.6 - 08/11/2010 - PAT - Addition of date structure with appropriate proxies, NCName type removal of QName type
+0.7 - 09/11/2010 - LCO - Revision for delivery
+0.8 - 24/11/2010 - PAT - Updates based on comments received from Member States
+0.9 - 25/11/2010 - LCO - Revision for delivery
+0.10 - 17/12/2010 - PAT - Various updates based on agreements found during Expert Group Review meeting 01-Dec-2010 and COPEN meeting 10-Dec-2010
+0.11 - 20/12/2010 - LCO - Revision for delivery of final version
+0.12 - 24/02/2011 - PAT - Various updates, based on Business Analysis v1.4
+0.13 - 29/09/2011 - PAT - Added NameTextType and FullNameTextType. Modified MultilingualTextType.
+0.14 - 25/01/2012 - LCO - Added type "PositiveDecimalType" for supporting decimal fractions in monetary amounts
+0.15 - 16/07/2012 - LCO - Implementing agreements reached during Expert Group Revoew meeting 21/22 June 2012
+						  Added type "NonNegativeIntegerType" used in the definition of the statistical indicators
+0.16 - 08/03/2013 - PAT, LCO - Implementing agreements reached during Expert Group meeting 19/20 February 2013
+							   The type "StringType" is made more restrictive (min length = 1; whiteSpaces = collapse)
+							   Several base types are added with limits of max lengths.
+0.17 - 14/03/2013 - LCO - Removed the definition of the types "MultilingualTextType" and "RestrictedStringType" as they are no longer used in the other XSD files
+-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:commons="http://ec.europa.eu/ECRIS/commons-v1.0" targetNamespace="http://ec.europa.eu/ECRIS/commons-v1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xsd:complexType name="AbstractRelationshipType" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The abstract base definition for all relationship types between entities. Please note that this abstract type is only a marker type and does not contain any elements. The concrete relationship types must be defined in the appropriate package file, deriving from this abstract type by extension, and using the proper specific types for the source and destination elements.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:complexType>
+	<xsd:simpleType name="UniqueIdentifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type for defining unique technical identifiers. This identifier must be unique across all ECRIS messages. The two first letters must be filled with the 2-letter code of the Member State.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:minLength value="25"/>
+			<xsd:pattern value="[A-Z]{2}-[A-Z]{2}-[A-Z]{3}-[0-9]{15}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="StringType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A proxy type for xsd:string</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+		<!-- START: added further restrictions in v0.16 of this file -->
+			<xsd:minLength value="1"/>
+			<xsd:pattern value="[\s\S-[&#x3C;&#x3E;]]*[\S-[&#x3C;&#x3E;]]+[\s\S-[&#x3C;&#x3E;]]*"/>
+			<xsd:whiteSpace value="collapse"/>
+			<!-- END -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="StrictDateType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A proxy type for xsd:date; it does not allow empty day, month or year values</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:date"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="BooleanType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A proxy type for xsd:boolean</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:boolean"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="DateTimeType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A proxy type for xsd:dateTime</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:dateTime"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="DurationType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A proxy type for xsd:duration</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:duration"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="Base64BinaryType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A proxy type for xsd:base64Binary</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:base64Binary"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="IntegerType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A proxy type for xsd:int</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:int"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="PositiveIntegerType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A proxy type for xsd:positiveInteger</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:positiveInteger"/>
+	</xsd:simpleType>
+	<!-- START: added section in v0.16 of this file -->
+	<xsd:simpleType name="RestrictedPositiveIntegerType3Digits">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A proxy type for xsd:positiveInteger limited to 3 digits</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:positiveInteger">
+			<xsd:minInclusive value="1"/>
+            <xsd:maxInclusive value="999"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- END -->
+    <xsd:complexType name="PositiveDecimalType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">A type for strictly positive decimal values with fraction supporting 2 positions</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+			<!-- START: limited to a non-negative integer of max 15 digits (v0.16 of this file) -->
+            <xsd:element name="PositiveDecimalUnit">
+				<xsd:simpleType>
+					<xsd:restriction base="commons:NonNegativeIntegerType">
+						<xsd:maxInclusive value="999999999999999"/>
+					</xsd:restriction>
+				</xsd:simpleType>	
+			</xsd:element>
+			<!-- END -->
+            <xsd:element name="PositiveDecimalFraction" minOccurs="0">
+                <xsd:simpleType>
+                    <xsd:restriction base="commons:PositiveIntegerType">
+                        <xsd:minInclusive value="1"/>
+                        <xsd:maxInclusive value="99"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+	<xsd:simpleType name="LanguageISO639-1CodeType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A simple type defining the structure for language codes following the ISO-639-1</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:StringType">
+			<xsd:length value="2"/>
+			<xsd:pattern value="[a-z]{2}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="IDRefType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A proxy type for xsd:IDREF</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:IDREF"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="IDType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A proxy type for xsd:ID</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:ID"/>
+	</xsd:simpleType>
+	<!-- THE TYPE BELOW IS NO LONGER USED; IT HAS BEEN REPLACED BY SEVERAL MORE SPECIFIC TYPES (since v0.17 of this file) -->
+	<!--
+	<xsd:simpleType name="RestrictedStringType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A restriction for the basic StringType, used to enforce the limit of 4048 maximum characters</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:StringType">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="4048"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	-->
+	<!-- START: added section in v0.16 of this file -->
+	<xsd:simpleType name="UncollapsedRestrictedStringType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A restriction of the base type xsd:string used to enforce the limit of 4000 maximum characters; this type does not allow empty fields but allows spaces, tabs, line-breaks, etc.; it is mainly used for large remarks that can be provided on multiple lines</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="1"/>
+			<xsd:pattern value="[\s\S-[&#x3C;&#x3E;]]*[\S-[&#x3C;&#x3E;]]+[\s\S-[&#x3C;&#x3E;]]*"/>
+			<xsd:maxLength value="4000"/>
+		</xsd:restriction>
+	</xsd:simpleType>	
+	<xsd:simpleType name="RestrictedStringType8to30Chars">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A restriction for the basic StringType used to enforce a String value between 8 and 30 characters</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:StringType">
+			<xsd:minLength value="8"/>
+			<xsd:maxLength value="30"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RestrictedStringType50Chars">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A restriction for the basic StringType used to enforce the limit of 50 maximum characters</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:StringType">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="50"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RestrictedStringType200Chars">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A restriction for the basic StringType used to enforce the limit of 200 maximum characters</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:StringType">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="200"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RestrictedStringType320Chars">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A restriction for the basic StringType used to enforce the limit of 320 maximum characters</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:StringType">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="320"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RestrictedStringType400Chars">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A restriction for the basic StringType used to enforce the limit of 400 maximum characters</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:StringType">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="400"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- END -->
+	<xsd:simpleType name="NameRestrictedStringType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A restriction for the basic StringType, used to enforce the limit of 200 maximum characters for names, surnames and second surnames</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:StringType">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="200"/>
+		</xsd:restriction>
+	</xsd:simpleType>	
+	<xsd:simpleType name="FullNameRestrictedStringType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A restriction for the basic StringType, used to enforce the limit of 600 maximum characters for full names</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:StringType">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="600"/>
+		</xsd:restriction>
+	</xsd:simpleType>		
+	<xsd:complexType name="NameTextType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A type used for names, surnames and second surnames, limiting their size to 200 characters</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="commons:NameRestrictedStringType">
+				<xsd:attribute name="languageCode" type="commons:LanguageISO639-1CodeType" use="optional"/>				
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="FullNameTextType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A type used for full names, limiting their size to 600 characters</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="commons:FullNameRestrictedStringType">
+				<xsd:attribute name="languageCode" type="commons:LanguageISO639-1CodeType" use="optional"/>				
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>	
+	<!-- THE TYPE BELOW IS NO LONGER USED; IT HAS BEEN REPLACED BY SEVERAL MORE SPECIFIC TYPES (since v0.17 of this file) -->
+	<!-- 
+	<xsd:complexType name="MultilingualTextType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A complex type representing a string value in one or more specific languages, allowing to indicate for each linguistic representation whether the text provided is the result of transliteration and/or translation.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="MultilingualTextLinguisticRepresentation" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">A linguistic representation of a given text value</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:simpleContent>
+						<xsd:extension base="commons:RestrictedStringType">
+							<xsd:attribute name="languageCode" type="commons:LanguageISO639-1CodeType" use="optional"/>
+							<xsd:attribute name="translated" type="commons:BooleanType" use="optional"/>
+						</xsd:extension>
+					</xsd:simpleContent>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	-->
+	<!-- START: added section in v0.16 of this file -->
+	<xsd:complexType name="UncollapsedMultilingualTextType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A complex type representing a string value in one or more specific languages, allowing to indicate for each linguistic representation whether the text provided is the result of transliteration and/or translation.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="MultilingualTextLinguisticRepresentation" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">A linguistic representation of a given text value</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:simpleContent>
+						<xsd:extension base="commons:UncollapsedRestrictedStringType">
+							<xsd:attribute name="languageCode" type="commons:LanguageISO639-1CodeType" use="optional"/>
+							<xsd:attribute name="translated" type="commons:BooleanType" use="optional"/>
+						</xsd:extension>
+					</xsd:simpleContent>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>	
+	<xsd:complexType name="MultilingualTextType50Chars">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A complex type representing a string value limited to 50 characters in one or more specific languages, allowing to indicate for each linguistic representation whether the text provided is the result of transliteration and/or translation.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="MultilingualTextLinguisticRepresentation" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">A linguistic representation of a given text value</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:simpleContent>
+						<xsd:extension base="commons:RestrictedStringType50Chars">
+							<xsd:attribute name="languageCode" type="commons:LanguageISO639-1CodeType" use="optional"/>
+							<xsd:attribute name="translated" type="commons:BooleanType" use="optional"/>
+						</xsd:extension>
+					</xsd:simpleContent>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="MultilingualTextType200Chars">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A complex type representing a string value limited to 200 characters in one or more specific languages, allowing to indicate for each linguistic representation whether the text provided is the result of transliteration and/or translation.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="MultilingualTextLinguisticRepresentation" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">A linguistic representation of a given text value</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:simpleContent>
+						<xsd:extension base="commons:RestrictedStringType200Chars">
+							<xsd:attribute name="languageCode" type="commons:LanguageISO639-1CodeType" use="optional"/>
+							<xsd:attribute name="translated" type="commons:BooleanType" use="optional"/>
+						</xsd:extension>
+					</xsd:simpleContent>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>	
+	<xsd:complexType name="MultilingualTextType400Chars">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A complex type representing a string value limited to 400 characters in one or more specific languages, allowing to indicate for each linguistic representation whether the text provided is the result of transliteration and/or translation.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="MultilingualTextLinguisticRepresentation" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">A linguistic representation of a given text value</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:simpleContent>
+						<xsd:extension base="commons:RestrictedStringType400Chars">
+							<xsd:attribute name="languageCode" type="commons:LanguageISO639-1CodeType" use="optional"/>
+							<xsd:attribute name="translated" type="commons:BooleanType" use="optional"/>
+						</xsd:extension>
+					</xsd:simpleContent>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- END -->
+	<xsd:simpleType name="NCNameType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A proxy type for xsd:QName</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:NCName"/>
+	</xsd:simpleType>
+	<xsd:complexType name="DateType">
+		<xsd:annotation>
+			<xsd:documentation>A proxy type for defining dates that allow empty day or month information for dates that are only partly defined.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="DateYear" type="commons:YearType" default="1800"/>
+			<xsd:element name="DateMonthDay" type="commons:MonthDayType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="MonthDayType">
+		<xsd:annotation>
+			<xsd:documentation>A proxy for day and month information; the month is mandatory and the day optional</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="DateMonth" type="commons:MonthType"/>
+			<xsd:element name="DateDay" type="commons:DayType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:simpleType name="MonthType">
+		<xsd:annotation>
+			<xsd:documentation>A proxy for xsd:gMonth</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:gMonth"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="DayType">
+		<xsd:annotation>
+			<xsd:documentation>A proxy for xsd:gDay</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:gDay"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="YearType">
+		<xsd:annotation>
+			<xsd:documentation>A proxy for xsd:gYear</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:gYear"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="YesNoUnknownStringEnumerationType">
+		<xsd:annotation>
+			<xsd:documentation>A type that allows only values "Yes", "No", "UNKNOWN".</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:StringType">
+			<xsd:enumeration value="Yes"/>
+			<xsd:enumeration value="No"/>
+			<xsd:enumeration value="UNKNOWN"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NonNegativeIntegerType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">A proxy type for xsd:nonNegativeInteger</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:nonNegativeInteger"/>
+	</xsd:simpleType>
+</xsd:schema>

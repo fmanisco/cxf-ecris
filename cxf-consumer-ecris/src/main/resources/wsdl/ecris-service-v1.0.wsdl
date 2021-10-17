@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ECRIS Technical Specifications – Detailed Technical Specifications
+Definition of ECRIS web services
+
+Author: iLICONN – Intrasoft International S.A.
+Owner: European Commission – DG Justice
+Issue Date: 10/01/2012
+Internal Version of File: 0.11
+Approval Status: Final
+
+File Authors:
+Panos ATHANASIOU (iLICONN – Intrasoft International S.A.)
+Ludovic COLACINO DIAS (iLICONN – Intrasoft International S.A.)
+
+File History:
+0.1 - 25/10/2010 - PAT - Initial draft
+0.2 - 02/11/2010 - PAT, LCO - Implementation of comments after internal revision
+0.3 - 05/11/2010 - PAT, LCO - Update based on v0.8 of the Business Analysis document
+0.4 - 07/11/2010 - LCO - Revision
+0.5 - 08/11/2010 - LCO - Implementation of comments after internal revision
+0.6 - 08/11/2010 - PAT - Minor fixes
+0.7 - 09/11/2010 - LCO - Revision for delivery
+0.8 - 16/12/2010 - PAT - Various updates based on agreements found during Expert Group Review meeting 01-Dec-2010 and COPEN meeting 10-Dec-2010
+0.9 - 20/12/2010 - LCO - Revision for delivery of final version
+0.10 - 28/02/2011 - PAT - Minor corrections
+0.11 - 10/01/2012 - PAT - Implementing naming strategy for web service name, using a suffix for indicating 
+						  the version of the specifications and the tyepf of NIST file support
+-->
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:service-v1.0="http://ec.europa.eu/ECRIS/service-v1.0" xmlns:contract="http://ec.europa.eu/ECRIS/contract" xmlns:faults="http://ec.europa.eu/ECRIS/faults-v1.0" xmlns:msg="http://ec.europa.eu/ECRIS/messages-v1.0" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:ns="http://ec.europa.eu/ECRIS/common-reference-tables-v1.0" xmlns:ns1="http://ec.europa.eu/ECRIS/commons-v1.0" xmlns:ns2="http://ec.europa.eu/ECRIS/domain-model-v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" targetNamespace="http://ec.europa.eu/ECRIS/contract">
+	<wsdl:documentation>Definition of the ECRIS service contract</wsdl:documentation>
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://ec.europa.eu/ECRIS/service-v1.0" elementFormDefault="qualified">
+			<xsd:annotation>
+				<xsd:documentation xml:lang="en">This schema includes the message definitions for ECRIS service v1.0</xsd:documentation>
+			</xsd:annotation>
+			<xsd:import namespace="http://ec.europa.eu/ECRIS/messages-v1.0" schemaLocation="messages-v1.0.xsd">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Import of Message type definitions</xsd:documentation>
+				</xsd:annotation>
+			</xsd:import>
+			<!--Request messages-->
+			<xsd:element name="RequestMessage" type="msg:RequestMessageType"/>
+			<xsd:element name="RequestPushMessage" type="msg:RequestMessagePushType"/>
+			<xsd:element name="RequestDeadlineMessage" type="msg:RequestDeadlineMessageType"/>
+			<xsd:element name="RequestResponseMessage" type="msg:RequestResponseMessageType"/>
+			<xsd:element name="RequestResponsePushMessage" type="msg:RequestResponseMessagePushType"/>
+			<!--Notification messages-->
+			<xsd:element name="NotificationMessage" type="msg:NotificationMessageType"/>
+			<xsd:element name="NotificationPushMessage" type="msg:NotificationMessagePushType"/>
+			<xsd:element name="NotificationResponseMessage" type="msg:NotificationResponseMessageType"/>
+			<xsd:element name="NotificationResponsePushMessage" type="msg:NotificationResponseMessagePushType"/>
+			<!--Additional ID Info messages-->
+			<xsd:element name="RequestAdditionalInfoMessage" type="msg:RequestAdditionalInfoMessageType"/>
+			<xsd:element name="RequestAdditionalInfoResponseMessage" type="msg:RequestAdditionalInfoResponseMessageType"/>
+			<xsd:element name="RequestAdditionalInfoResponsePushMessage" type="msg:RequestAdditionalInfoResponseMessagePushType"/>
+			<!--Functional Error message-->
+			<xsd:element name="FunctionalErrorMessage" type="msg:FunctionalErrorMessageType"/>
+			<!--IsAlive message-->
+			<xsd:element name="IsAliveMessage" type="msg:IsAliveMessageType"/>
+			<!--Cancellation message-->
+			<xsd:element name="CancellationMessage" type="msg:CancellationMessageType"/>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="Request-v1.0">
+		<wsdl:documentation>ECRIS Request message</wsdl:documentation>
+		<wsdl:part name="body" element="service-v1.0:RequestMessage"/>
+	</wsdl:message>
+	<wsdl:message name="RequestPush-v1.0">
+		<wsdl:documentation>ECRIS Request message ("push" version including binary attachment)</wsdl:documentation>
+		<wsdl:part name="body" element="service-v1.0:RequestPushMessage"/>
+	</wsdl:message>
+	<wsdl:message name="RequestResponse-v1.0">
+		<wsdl:documentation>ECRIS Request Response message</wsdl:documentation>
+		<wsdl:part name="body" element="service-v1.0:RequestResponseMessage"/>
+	</wsdl:message>
+	<wsdl:message name="RequestResponsePush-v1.0">
+		<wsdl:documentation>ECRIS Request Response message ("push" version including binary attachment)</wsdl:documentation>
+		<wsdl:part name="body" element="service-v1.0:RequestResponsePushMessage"/>
+	</wsdl:message>
+	<wsdl:message name="RequestDeadline-v1.0">
+		<wsdl:documentation>ECRIS Request Deadline message</wsdl:documentation>
+		<wsdl:part name="body" element="service-v1.0:RequestDeadlineMessage"/>
+	</wsdl:message>
+	<wsdl:message name="Notification-v1.0">
+		<wsdl:documentation>ECRIS Notification message</wsdl:documentation>
+		<wsdl:part name="body" element="service-v1.0:NotificationMessage"/>
+	</wsdl:message>
+	<wsdl:message name="NotificationPush-v1.0">
+		<wsdl:documentation>ECRIS Notification message ("push" version including binary attachment)</wsdl:documentation>
+		<wsdl:part name="body" element="service-v1.0:NotificationPushMessage"/>
+	</wsdl:message>
+	<wsdl:message name="NotificationResponse-v1.0">
+		<wsdl:documentation>ECRIS Notification Response message</wsdl:documentation>
+		<wsdl:part name="body" element="service-v1.0:NotificationResponseMessage"/>
+	</wsdl:message>
+	<wsdl:message name="NotificationResponsePush-v1.0">
+		<wsdl:documentation>ECRIS Notification Response message ("push" version including binary attachment)</wsdl:documentation>
+		<wsdl:part name="body" element="service-v1.0:NotificationResponsePushMessage"/>
+	</wsdl:message>
+	<wsdl:message name="FunctionalError-v1.0">
+		<wsdl:documentation>ECRIS Functional Error message</wsdl:documentation>
+		<wsdl:part name="body" element="service-v1.0:FunctionalErrorMessage"/>
+	</wsdl:message>
+	<wsdl:message name="IsAlive-v1.0">
+		<wsdl:documentation>ECRIS IsAlive message</wsdl:documentation>
+		<wsdl:part name="body" element="service-v1.0:IsAliveMessage"/>
+	</wsdl:message>
+	<wsdl:message name="Cancellation-v1.0">
+		<wsdl:documentation>ECRIS Cancellation message</wsdl:documentation>
+		<wsdl:part name="body" element="service-v1.0:CancellationMessage"/>
+	</wsdl:message>
+	<wsdl:message name="RequestAdditionalInfo-v1.0">
+		<wsdl:documentation>ECRIS Request Additional ID Information message</wsdl:documentation>
+		<wsdl:part name="body" element="service-v1.0:RequestAdditionalInfoMessage"/>
+	</wsdl:message>
+	<wsdl:message name="RequestAdditionalInfoResponse-v1.0">
+		<wsdl:documentation>ECRIS Request Additional ID Information Response message</wsdl:documentation>
+		<wsdl:part name="body" element="service-v1.0:RequestAdditionalInfoResponseMessage"/>
+	</wsdl:message>
+	<wsdl:message name="RequestAdditionalInfoResponsePush-v1.0">
+		<wsdl:documentation>ECRIS Request Additional ID Information Response message ("push" version including binary attachment)</wsdl:documentation>
+		<wsdl:part name="body" element="service-v1.0:RequestAdditionalInfoResponsePushMessage"/>
+	</wsdl:message>
+	<wsdl:portType name="ecrisServicePortType-v1.0">
+		<wsdl:documentation>Definition of the web service operations to be used for the ECRIS data exchanges</wsdl:documentation>
+		<!-- Request kinematics operations START -->
+		<wsdl:operation name="deliverRequest">
+			<wsdl:documentation>"deliverRequest" is the entry operation for the "Request Criminal Record Information" business process</wsdl:documentation>
+			<wsdl:input name="request" message="contract:Request-v1.0">
+				<wsdl:documentation>The request message</wsdl:documentation>
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="deliverRequestPush">
+			<wsdl:documentation>"deliverRequestPush" is the entry operation of the "Request Criminal Record Information" business process ('push" version including binary attachment)</wsdl:documentation>
+			<wsdl:input name="requestPush" message="contract:RequestPush-v1.0"/>
+		</wsdl:operation>
+		<wsdl:operation name="deliverRequestResponse">
+			<wsdl:documentation>"deliverRequestResponse" is the operation that provides the business response to the request</wsdl:documentation>
+			<wsdl:input name="requestResponse" message="contract:RequestResponse-v1.0"/>
+		</wsdl:operation>
+		<wsdl:operation name="deliverRequestResponsePush">
+			<wsdl:documentation>"deliverRequestResponsePush" is the operation that provides the business response to the request ("push" version including binary attachment)</wsdl:documentation>
+			<wsdl:input name="requestResponsePush" message="contract:RequestResponsePush-v1.0"/>
+		</wsdl:operation>
+		<wsdl:operation name="deliverRequestDeadline">
+			<wsdl:documentation>"deliverRequestDeadline" is the operation that provides the legal deadline for the response to the request</wsdl:documentation>
+			<wsdl:input name="requestDeadline" message="contract:RequestDeadline-v1.0"/>
+		</wsdl:operation>
+		<!-- Request kinematics operations END -->
+		<!-- Notification kinematics operations START -->
+		<wsdl:operation name="deliverNotification">
+			<wsdl:documentation>"deliverNotification" is the entry operation for the "Notify Convictions and Subsequent Changes" business process</wsdl:documentation>
+			<wsdl:input name="notification" message="contract:Notification-v1.0"/>
+		</wsdl:operation>
+		<wsdl:operation name="deliverNotificationPush">
+			<wsdl:documentation>"deliverNotificationPush" is the entry operation for the "Notify Convictions and Subsequent Changes" business process ("push" version including binary attachment)</wsdl:documentation>
+			<wsdl:input name="notificationPush" message="contract:NotificationPush-v1.0"/>
+		</wsdl:operation>
+		<wsdl:operation name="deliverNotificationResponse">
+			<wsdl:documentation>"deliverNotificationResponse" is the operation that provides the business response to the notification</wsdl:documentation>
+			<wsdl:input name="notificationResponse" message="contract:NotificationResponse-v1.0"/>
+		</wsdl:operation>
+		<wsdl:operation name="deliverNotificationResponsePush">
+			<wsdl:documentation>"deliverNotificationResponse" is the operation that provides the business response to the notification ("push" version including binary attachment)</wsdl:documentation>
+			<wsdl:input name="notificationResponsePush" message="contract:NotificationResponsePush-v1.0"/>
+		</wsdl:operation>
+		<!-- Notification kinematics operations END -->
+		<!-- Request Additional ID Info kinematics operations START-->
+		<wsdl:operation name="deliverRequestAdditionalInfo">
+			<wsdl:documentation>"deliverRequestAdditionalInfo" is the entry operation for the "Search Person" sub-process and can be used in both business processes "Request Criminal Record Information" and "Notify Convictions and Subsequent Changes"</wsdl:documentation>
+			<wsdl:input name="requestAdditionalInfo" message="contract:RequestAdditionalInfo-v1.0"/>
+		</wsdl:operation>
+		<wsdl:operation name="deliverRequestAdditionalInfoResponse">
+			<wsdl:documentation>"deliverRequestAdditionalInfoResponse" is the operation that provides the business response to the request for additional identification information in all cases, whether additional ID info is available or not</wsdl:documentation>
+			<wsdl:input name="requestAdditionalInfoResponse" message="contract:RequestAdditionalInfoResponse-v1.0"/>
+		</wsdl:operation>
+		<wsdl:operation name="deliverRequestAdditionalInfoResponsePush">
+			<wsdl:documentation>"deliverRequestAdditionalInfoResponsePush" is the operation that provides the business response to the request for additional identification information, to be used only in cases where additional ID info is available ("push" version including binary attachment)</wsdl:documentation>
+			<wsdl:input name="requestAdditionalInfoResponsePush" message="contract:RequestAdditionalInfoResponsePush-v1.0"/>
+		</wsdl:operation>
+		<!-- Request Additional ID Info kinematics operations END-->
+		<!-- General usage operations START-->
+		<wsdl:operation name="deliverFunctionalError">
+			<wsdl:documentation>"deliverBinary" is the operation that provides the functional error that occurred when processing one of the business messages</wsdl:documentation>
+			<wsdl:input name="functionalError" message="contract:FunctionalError-v1.0"/>
+		</wsdl:operation>
+		<wsdl:operation name="isAlive">
+			<wsdl:documentation>"isAlive" is the operation that allows checking whether another ECRIS web service endpoint is properly responding</wsdl:documentation>
+			<wsdl:input name="isAliveRequest" message="contract:IsAlive-v1.0"/>
+			<wsdl:output name="isAliveResponse" message="contract:IsAlive-v1.0"/>
+		</wsdl:operation>
+		<!-- General usage operations END-->
+		<wsdl:operation name="deliverCancellation">
+			<wsdl:documentation>"deliverCancellation" is the operation that allows cancelling a previously sent message</wsdl:documentation>
+			<wsdl:input name="cancellation" message="contract:Cancellation-v1.0"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="ecrisServiceBinding-v1.0" type="contract:ecrisServicePortType-v1.0">
+		<soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<!-- Request kinematics related operations START -->
+		<wsdl:operation name="deliverRequest">
+			<soap12:operation soapAction="http://ec.europa.eu/ECRIS/deliverRequest" soapActionRequired="true"/>
+			<wsdl:input name="request">
+				<soap12:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="deliverRequestPush">
+			<soap12:operation soapAction="http://ec.europa.eu/ECRIS/deliverRequestPush" soapActionRequired="true"/>
+			<wsdl:input name="requestPush">
+				<soap12:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="deliverRequestResponse">
+			<soap12:operation soapAction="http://ec.europa.eu/ECRIS/deliverRequestResponse" soapActionRequired="true"/>
+			<wsdl:input name="requestResponse">
+				<soap12:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="deliverRequestResponsePush">
+			<soap12:operation soapAction="http://ec.europa.eu/ECRIS/deliverRequestResponsePush" soapActionRequired="true"/>
+			<wsdl:input name="requestResponsePush">
+				<soap12:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="deliverRequestDeadline">
+			<soap12:operation soapAction="http://ec.europa.eu/ECRIS/deliverRequestDeadline" soapActionRequired="true"/>
+			<wsdl:input name="requestDeadline">
+				<soap12:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<!-- Request kinematics related operations END -->
+		<!-- Notification kinematics related operations START -->
+		<wsdl:operation name="deliverNotification">
+			<soap12:operation soapAction="http://ec.europa.eu/ECRIS/deliverNotification" soapActionRequired="true"/>
+			<wsdl:input name="notification">
+				<soap12:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="deliverNotificationPush">
+			<soap12:operation soapAction="http://ec.europa.eu/ECRIS/deliverNotificationPush" soapActionRequired="true"/>
+			<wsdl:input name="notificationPush">
+				<soap12:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="deliverNotificationResponse">
+			<soap12:operation soapAction="http://ec.europa.eu/ECRIS/deliverNotificationResponse" soapActionRequired="true"/>
+			<wsdl:input name="notificationResponse">
+				<soap12:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="deliverNotificationResponsePush">
+			<soap12:operation soapAction="http://ec.europa.eu/ECRIS/deliverNotificationResponsePush" soapActionRequired="true"/>
+			<wsdl:input name="notificationResponsePush">
+				<soap12:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<!-- Notification kinematics related operations END -->
+		<!-- Request additional info kinematics related operations START-->
+		<wsdl:operation name="deliverRequestAdditionalInfo">
+			<soap12:operation soapAction="http://ec.europa.eu/ECRIS/deliverRequestAdditionalInfo" soapActionRequired="true"/>
+			<wsdl:input name="requestAdditionalInfo">
+				<soap12:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="deliverRequestAdditionalInfoResponse">
+			<soap12:operation soapAction="http://ec.europa.eu/ECRIS/deliverRequestAdditionalInfoResponse" soapActionRequired="true"/>
+			<wsdl:input name="requestAdditionalInfoResponse">
+				<soap12:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="deliverRequestAdditionalInfoResponsePush">
+			<soap12:operation soapAction="http://ec.europa.eu/ECRIS/deliverRequestAdditionalInfoResponsePush" soapActionRequired="true"/>
+			<wsdl:input name="requestAdditionalInfoResponsePush">
+				<soap12:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<!-- Request additional info kinematics related operations END-->
+		<!-- General usage operations START-->
+		<wsdl:operation name="deliverFunctionalError">
+			<soap12:operation soapAction="http://ec.europa.eu/ECRIS/deliverFunctionalError" soapActionRequired="true"/>
+			<wsdl:input name="functionalError">
+				<soap12:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="isAlive">
+			<soap12:operation soapAction="http://ec.europa.eu/ECRIS/isAlive" soapActionRequired="true"/>
+			<wsdl:input name="isAliveRequest">
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output name="isAliveResponse">
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="deliverCancellation">
+			<soap12:operation soapAction="http://ec.europa.eu/ECRIS/deliverCancellation" soapActionRequired="true"/>
+			<wsdl:input name="cancellation">
+				<soap12:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<!-- General usage operations END-->
+	</wsdl:binding>
+	<wsdl:service name="ecrisService-v1.0_nofp">
+		<wsdl:documentation>The ECRIS Service v1.0</wsdl:documentation>
+		<wsdl:port name="ecrisServicePort-v1.0" binding="contract:ecrisServiceBinding-v1.0">
+			<soap12:address location="http://public.host.at.stesta/ecris">
+				<wsdl:documentation>The ECRIS port for v1.0. Member States must change the address here and refer to
+                    their service endpoint implementation.
+                </wsdl:documentation>
+			</soap12:address>
+		</wsdl:port>
+	</wsdl:service>
+	<!-- A definition pointing to an ECRIS instance NOT supporting fingerprints -->
+	<!-- A definition pointing to an ECRIS  instance  supporting fingerprints using the Pull approach -->
+	<!-- <wsdl:service name="ecrisService-v1.0_pull">
+        <wsdl:documentation>The ECRIS Service v1.0</wsdl:documentation>
+        <wsdl:port name="ecrisServicePort-v1.0" binding="contract:ecrisServiceBinding-v1.0">
+            <soap12:address location="http://public.host.at.stesta/ecris">
+                <wsdl:documentation>The ECRIS port for v1.0. Member States must change the address here and refer to
+                    their service endpoint implementation.
+                </wsdl:documentation>
+            </soap12:address>
+        </wsdl:port>
+    </wsdl:service> -->
+	<!-- A definition pointing to an ECRIS RI instance  supporting fingerprints using the Push approach -->
+	<!-- <wsdl:service name="ecrisService-v1.0_push">
+        <wsdl:documentation>The ECRIS Service v1.0</wsdl:documentation>
+        <wsdl:port name="ecrisServicePort-v1.0" binding="contract:ecrisServiceBinding-v1.0">
+            <soap12:address location="http://public.host.at.stesta/ecris">
+                <wsdl:documentation>The ECRIS port for v1.0. Member States must change the address here and refer to
+                    their service endpoint implementation.
+                </wsdl:documentation>
+            </soap12:address>
+        </wsdl:port>
+    </wsdl:service> -->
+</wsdl:definitions>

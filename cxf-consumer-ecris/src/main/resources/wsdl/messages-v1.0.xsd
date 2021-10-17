@@ -1,0 +1,1301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ECRIS Technical Specifications – Detailed Technical Specifications
+Definition of ECRIS messages
+
+Author: iLICONN – Intrasoft International S.A.
+Owner: European Commission – DG Justice
+Issue Date: 14/03/2013
+Internal Version of File: 0.23
+Approval Status: Final
+
+File Authors:
+Panos ATHANASIOU (iLICONN – Intrasoft International S.A.)
+Ludovic COLACINO DIAS (iLICONN – Intrasoft International S.A.)
+
+File History:
+0.1 - 25/10/2010 - PAT - Initial draft
+0.2 - 02/11/2010 - PAT, LCO - Implementation of comments after internal revision
+0.3 - 05/11/2010 - PAT, LCO - Update based on v0.8 of the Business Analysis document
+0.4 - 07/11/2010 - LCO - Revision
+0.5 - 08/11/2010 - LCO - Implementation of comments after internal revision
+0.6 - 09/11/2010 - PAT - Minor fixes
+0.7 - 09/11/2010 - LCO - Revision for delivery
+0.8 - 24/11/2010 - PAT - Updates based on comments received from Member States
+0.9 - 25/11/2010 - LCO - Revision for delivery
+0.10 - 17/12/2010 - PAT - Various updates based on agreements found during Expert Group Review meeting 01-Dec-2010 and COPEN meeting 10-Dec-2010
+0.11 - 20/12/2010 - LCO - Revision for delivery of final version
+0.12 - 24/02/2011 - PAT - Various updates based on Business Analysis v1.4
+0.13 - 27/02/2011 - LCO - Final revision, based on Business Analysis v1.4
+0.14 - 28/02/2011 - PAT - Minor corrections
+0.15 - 06/06/2011 - LCO - Correction of the functional error and cancellation messages - aligned with Business Analysis v1.5
+0.16 - 06/06/2011 - PAT - Minor correction on the definition of "FunctionalErrorType
+0.17 - 29/09/2011 - PAT - Removed MessageDataPersonTransliterated element, updated ContactPersonType
+0.18 - 03/01/2012 - PAT - Clarified the meaning of the values for element "MessageDataUrgency"
+0.19 - 28/01/2012 - PAT - Modified element types so as to enforce uniqueness of conviction ID in a request response message while not enforcing 
+						  it in a notification message when referring to an updated or affected conviction
+						  Added the following types of elements:
+							"NonEcrisConvictionReferencesGroup", "StructuredStrictConvictionReferenceType", "StructuredLooseConvictionReferenceType"
+                          Removed "StructuredConvictionReferenceType"
+0.20 - 29/01/2012 - PAT - Technical correction: added missing FEM message identifier in the list of possible values for "CorrelatedMessageIDType" element
+0.21 - 09/10/2012 - LCO - Correcting documentation of element "MessageDataUrgency"
+0.22 - 08/03/2013 - LCO - Implementing agreements reached during Expert Group meeting 19/20 February 2013
+						  Adding max length limitations to several XML elements by using more restrictive base types.
+						  Changing the type of all remarks fields to a base type that does not collapse white-spaces (i.e. the base type commons:StringType is made more restrictive) 
+0.23 - 14/30/2013 - LCO - Implementing comments from DG JUST; several additional elements have been made more restrictive and limited in length
+-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:commons="http://ec.europa.eu/ECRIS/commons-v1.0" xmlns:dm="http://ec.europa.eu/ECRIS/domain-model-v1.0" xmlns:crt="http://ec.europa.eu/ECRIS/common-reference-tables-v1.0" xmlns:msg="http://ec.europa.eu/ECRIS/messages-v1.0" targetNamespace="http://ec.europa.eu/ECRIS/messages-v1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xsd:import namespace="http://ec.europa.eu/ECRIS/commons-v1.0" schemaLocation="commons-v1.0.xsd"/>
+	<xsd:import namespace="http://ec.europa.eu/ECRIS/domain-model-v1.0" schemaLocation="domain-model-v1.0.xsd"/>
+	<xsd:import namespace="http://ec.europa.eu/ECRIS/common-reference-tables-v1.0" schemaLocation="common-reference-tables-v1.0.xsd"/>
+	<!-- Local type definitions START-->
+	<xsd:complexType name="ContactPersonType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">Information of the person within the central authority of the Member State
+                that can be further contacted in case of questions or problems relating to a specific ECRIS message.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="dm:Forename" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The first name of the contact person.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="dm:Surname" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The last name of the contact person.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="dm:SecondSurname" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The second last name of the contact person</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<!-- START: setting min and max lengths to 8 and 30 chars (v0.22 of this file) -->
+			<xsd:element name="ContactPersonPhoneNumber" type="commons:RestrictedStringType8to30Chars" minOccurs="0">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The phone number of the contact person, including the standard
+                        country calling prefix number (as text element).
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<!-- START: setting min and max lengths to 8 and 30 chars (v0.22 of this file) -->
+			<xsd:element name="ContactPersonFaxNumber" type="commons:RestrictedStringType8to30Chars" minOccurs="0">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The fax number of the contact person, including the standard
+                        country calling prefix number (as text element).
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<!-- START: limiting max length to 320 chars (v0.22 of this file)-->
+			<xsd:element name="ContactPersonEmail" type="commons:RestrictedStringType320Chars">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The e-mail address of the contact person.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="RequestingAuthorityType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">Information on the competent authority within a requesting Member State
+                that is at the origin of the request and before which the proceedings are pending.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="RequestingAuthorityTypeReference" type="crt:RequestingAuthorityTypeExternalReferenceType">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The type of the competent authority.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<!-- START: limiting max length to 50 chars (v0.23 of this file) -->
+			<xsd:element name="RequestingAuthorityCode" type="commons:RestrictedStringType50Chars" minOccurs="0">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">A code representing the competent authority.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<!-- START: limiting max length to 400 chars (v0.22 of this file) -->
+			<xsd:element name="RequestingAuthorityName" type="commons:MultilingualTextType400Chars">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The official name of the competent requesting authority.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:simpleType name="BinaryAttachmentIDType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The unique ID of a binary attachment. This identifier must be unique across
+                all ECRIS messages. The two first letters must be filled with the 2-letter code of the Member State.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:IDType">
+			<xsd:length value="15"/>
+			<xsd:pattern value="[A-Z]{2}-BA-[0-9]{9}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:complexType name="BinaryAttachmentType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">Meta-data information on the binary file attached to a message. In this
+                version of the specifications, it is only expected to exchange NIST files using this mechanism.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="BinaryAttachmentID" type="msg:BinaryAttachmentIDType">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The unique ID of the binary file attached. This identifier must be
+                        unique across all ECRIS messages. The two first letters must be filled with the 2-letter code of
+                        the Member State.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<!-- START: limiting max length to 50 chars (v0.23 of this file) -->
+			<xsd:element name="BinaryAttachmentMimeType" type="commons:RestrictedStringType50Chars" default="application/nist">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The MIME type of the binary file attached. The value
+                        "application/nist" is the only expected value in this version of the technical specifications of
+                        ECRIS.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<!-- START: limiting max length to 200 chars (v0.23 of this file) -->
+			<xsd:element name="BinaryAttachmentFileName" type="commons:RestrictedStringType200Chars" default="UNKNOWN">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The name of binary file attached.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<!-- START: limiting max length to 400 chars (v0.22 of this file) -->
+			<xsd:element name="BinaryAttachmentTitle" type="commons:MultilingualTextType400Chars" minOccurs="0">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The textual title of the binary file attached.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="BinaryAttachmentFileSize" type="commons:PositiveIntegerType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The size of the binary file attached in kilobytes.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="BinaryAttachmentComment" type="commons:UncollapsedMultilingualTextType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Any additional information related to the binary file attached.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<!-- START: limiting max length to 50 chars (v0.23 of this file) -->
+			<xsd:element name="BinaryAttachmentMD5Hash" type="commons:RestrictedStringType50Chars" minOccurs="0">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The MD5 hash of the binary file attached.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="BinaryAttachmentPushType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">Meta-data and actual binary content of the attached fingerprints file (i.e.
+                NIST file). This type is used to actually carry the binary file in a message.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="msg:BinaryAttachmentType">
+				<xsd:sequence>
+					<xsd:element name="BinaryAttachmentContent" type="commons:Base64BinaryType">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The content of the binary file.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:simpleType name="AdditionalInformationRequestedEnumeration">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">An enumeration representing all the values that can be asked for in the
+                "Request Additional Information" message.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:StringType">
+			<xsd:enumeration value="Forename"/>
+			<xsd:enumeration value="Surname"/>
+			<xsd:enumeration value="SecondSurname"/>
+			<xsd:enumeration value="Sex"/>
+			<xsd:enumeration value="BirthDate"/>
+			<xsd:enumeration value="BirthPlace"/>
+			<xsd:enumeration value="Nationality"/>
+			<xsd:enumeration value="FormerName"/>
+			<xsd:enumeration value="MotherName"/>
+			<xsd:enumeration value="FatherName"/>
+			<xsd:enumeration value="IdentityNumber"/>
+			<xsd:enumeration value="IdentificationDocument"/>
+			<xsd:enumeration value="Address"/>
+			<xsd:enumeration value="Alias"/>
+			<xsd:enumeration value="Fingerprints"/>
+			<xsd:enumeration value="MoreInformationOnRequestPurpose"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="BaseMessageIDType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The base message identifier type. This identifier must be unique across all
+                ECRIS messages. It consists of the 2-letter code of the originating Member State, followed by the two
+                letter code of the receiving Member State, followed by a three letter code definining the type of
+                message, followed by a 15 digit unique number.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="commons:UniqueIdentifierType">
+			<xsd:length value="25"/>
+			<xsd:pattern value="[A-Z]{2}-[A-Z]{2}-(REQ|RDL|RRS|NOT|NRS|RAI|RAR|IAL|CAN|FEM)-[0-9]{15}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="InitiatingMessageIDType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The message ID type for all message types that initialise a new functional
+                transaction. Concretely these are requests, notifications and isAlive messages.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="msg:BaseMessageIDType">
+			<xsd:length value="25"/>
+			<xsd:pattern value="[A-Z]{2}-[A-Z]{2}-(REQ|NOT|IAL)-[0-9]{15}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CorrelatingMessageIDType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The message ID type for all message types that must be correlating with
+                another message. Concretely, these are notification responses, request deadlines, request responses,
+                functional errors, requests for additional information and responses to requests for additional
+                information.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="msg:BaseMessageIDType">
+			<xsd:length value="25"/>
+			<xsd:pattern value="[A-Z]{2}-[A-Z]{2}-(NRS|RAI|RAR|FEM|RRS|RDL)-[0-9]{15}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CorrelatedMessageIDType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The message ID type for all message types that must be correlated.
+                Concretely, these are requests, request deadlines, notifications, requests for additional information
+                and responses to requests for additional information. Please note that cancellation messages are also
+                part of the supported message types for the specific case where a functional error has to be returned as
+                a response to an erroneous cancellation message. Request responses and notification responses are also
+                included in the supported message types but only for the case where the specific functional error
+                [LMS-1] has to be returned because this type of message was received after time 21:59:59 of the last
+                calendar day of the month and before time 02:00:01 of the first calendar day of the month.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="msg:BaseMessageIDType">
+			<xsd:length value="25"/>
+			<xsd:pattern value="[A-Z]{2}-[A-Z]{2}-(REQ|RDL|NOT|RAI|RAR|CAN|RRS|NRS|FEM)-[0-9]{15}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CancellationMessageIDType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The message ID for cancellation of messages.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="msg:BaseMessageIDType">
+			<xsd:length value="25"/>
+			<xsd:pattern value="[A-Z]{2}-[A-Z]{2}-CAN-[0-9]{15}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CancelledMessageIDType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The type supporting IDs for cancellation of messages. Message identifiers
+                for the following message types are supported: notifications, notification responses, requests and
+                request responses.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="msg:BaseMessageIDType">
+			<xsd:length value="25"/>
+			<xsd:pattern value="[A-Z]{2}-[A-Z]{2}-(REQ|RRS|NOT|NRS)-[0-9]{15}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:complexType name="ConvictionToConvictionsRelationshipType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This types defines one-to-many relationships between one "conviction" and
+                one or more "conviction" entities. The source conviction must be contained in the same XML document but
+                the destinations refer to convictions that have been sent previously and that are outside of the XML
+                document itself.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="commons:AbstractRelationshipType">
+				<xsd:sequence>
+					<xsd:element name="SourceConviction" type="dm:ConvictionReferenceType">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The source of the relationship. It must point to a valid
+                                "ConvictionID" value in the same XML document.
+                            </xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="DestinationConviction" type="msg:StructuredLooseConvictionReferenceType" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The destination of the relationship. It must refer to a
+                                conviction contained in another XML document which is either a past conviction sent via
+                                ECRIS, a past conviction sent via NJR or a past conviction sent through other means of
+                                communication.
+                            </xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="NonEcrisConvictionReferencesGroup">
+		<xsd:choice>
+			<xsd:element name="NJRConvictionReference" type="dm:NJRConvictionExternalReferenceType">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The destination of the relationship. It must point to a valid NJR
+                        ID value, which is transmitted in NJR using the field "decision_id" in messages. Please note
+                        that the size of this value must be 20 characters as defined in the NJR technical specification.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ExternalConviction">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The destination of the relationship. A structure structure is
+                        provided for giving information on convictions that have been sent outside of ECRIS or NJR.
+                    </xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="ConvictingAuthority" type="dm:DecidingAuthorityType"/>
+						<!-- START: limiting max length to 50 chars (v0.23 of this file) -->
+						<xsd:element name="ConvictionFileNumber" type="commons:RestrictedStringType50Chars"/>
+						<!-- END -->
+						<xsd:element name="ConvictionDecisionFinalDate" type="commons:StrictDateType"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:choice>
+	</xsd:group>
+	<xsd:complexType name="StructuredStrictConvictionReferenceType">
+		<xsd:annotation>
+			<xsd:documentation>This type allows providing a reference to conviction included in a structured
+                form, wether this conviction has been sent through ECRIS, NJR or any other means of communication.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:choice>
+			<xsd:element name="ECRISConvictionReference" type="dm:ConvictionReferenceType">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The destination of the relationship. It must point to a valid
+                        "ConvictionID" value, not included in the same message.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:group ref="msg:NonEcrisConvictionReferencesGroup"/>
+		</xsd:choice>
+	</xsd:complexType>
+	<xsd:complexType name="StructuredLooseConvictionReferenceType">
+		<xsd:annotation>
+			<xsd:documentation>This type allows providing a reference to a previously sent conviction in a structured
+                form, wether this conviction has been sent through ECRIS, NJR or any other means of communication.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:choice>
+			<xsd:element name="ECRISConvictionReference" type="dm:ConvictionExternalReferenceType">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The destination of the relationship. It must point to a valid
+                        "ConvictionID" value, not included in the same message.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:group ref="msg:NonEcrisConvictionReferencesGroup"/>
+		</xsd:choice>
+	</xsd:complexType>
+	<xsd:complexType name="FunctionalErrorType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type defines a functional error, being composed of a code and
+                additional textual information relating to this functional error.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="FunctionalErrorCode" type="crt:FunctionalErrorCodeType">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The code of the functional error.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="FunctionalErrorAdditionalInformation" type="commons:UncollapsedMultilingualTextType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Additional textual information on the functional error that
+                        occurred.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- Local type definitions END-->
+	<!-- Base message type definitions START-->
+	<xsd:complexType name="AbstractMessageMetaDataType" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The abstract message meta data type.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="MessageMetaDataMessageID" type="msg:BaseMessageIDType">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The unique technical identifier of the message.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageMetaDataTimestamp" type="commons:DateTimeType">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The timestamp of the message.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageMetaDataResponseTo" type="msg:BaseMessageIDType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The unique technical identifier of a message that this message
+                        correlates to. It must correspond to the value of the "MessageMetaDataMessageID" property sent
+                        in a previous message.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="MessageMetaDataType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The base message meta data type. It is used for all messages which are
+                entry points for business processes and which do not correlate to previously send messages.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractMessageMetaDataType">
+				<xsd:sequence>
+					<xsd:element name="MessageMetaDataMessageID" type="msg:InitiatingMessageIDType"/>
+					<xsd:element name="MessageMetaDataTimestamp" type="commons:DateTimeType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="CorrelatingMessageMetaDataType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">An extension to the abstract meta data type. It is used for all messages
+                which are not entry points for business processes and which MUST correlate to previously sent messages.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractMessageMetaDataType">
+				<xsd:sequence>
+					<xsd:element name="MessageMetaDataMessageID" type="msg:CorrelatingMessageIDType"/>
+					<xsd:element name="MessageMetaDataTimestamp" type="commons:DateTimeType"/>
+					<xsd:element name="MessageMetaDataResponseTo" type="msg:CorrelatedMessageIDType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="CancellationMessageMetaDataType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">An extension to the abstract meta data type. It is used for cancellation
+                messages. The MessageMetaDataResponseTo property is used to provide the ID of the message that is to be
+                cancelled.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractMessageMetaDataType">
+				<xsd:sequence>
+					<xsd:element name="MessageMetaDataMessageID" type="msg:CancellationMessageIDType"/>
+					<xsd:element name="MessageMetaDataTimestamp" type="commons:DateTimeType"/>
+					<xsd:element name="MessageMetaDataResponseTo" type="msg:CancelledMessageIDType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="AbstractMessageType" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The abstract base definition for all ECRIS messages. It contains the
+                message meta-data and message data.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="MessageMetaData" type="msg:AbstractMessageMetaDataType">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The meta-data part of the message.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageData" type="xsd:anyType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The data part of the message.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- Base message type definitions END-->
+	<!-- General Usage Messages START-->
+	<xsd:complexType name="IsAliveMessageDataType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents the data content of the "IsAlive" message.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="IsAlive" type="commons:BooleanType">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The value "true" indicates that the web service end-point is
+                        functional and able to respond to calls.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="IsAliveMessageType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The "isAlive" message is used as output of he "isAlive" operation and
+                informs the caller that the end-point is functional and able to respond to calls.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractMessageType">
+				<xsd:sequence>
+					<xsd:element name="MessageMetaData" type="msg:MessageMetaDataType"/>
+					<xsd:element name="MessageData" type="msg:IsAliveMessageDataType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- General Usage Messages END-->
+	<!-- Generic complex type definitions required for Notification/Request kinematics START -->
+	<xsd:complexType name="AbstractBusinessMessageDataType" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The abstract base definition of the message data contained in all messages
+                participating in the ECRIS business processes. All message data types are derived from this one by
+                restriction.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="MessageDataContactPerson" type="msg:ContactPersonType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Information on the person within the central authority of the
+                        Member State that can be contacted in case of questions or problems with this message.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageDataPerson" type="dm:PersonType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Identification information of the person that is referred to by
+                        this message.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<!-- START: using a string type not collapsing white-space characters (v0.22 of this file) -->
+			<xsd:element name="MessageDataRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Any additional information available regarding this message.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageDataRequestPurposeCategoryReference" type="crt:RequestPurposeExternalReferenceType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Category of the purpose of the "Request" message.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<!-- START: limiting to max length of 400 chars (v0.22 of this file) -->
+			<xsd:element name="MessageDataRequestPurpose" type="commons:MultilingualTextType400Chars" minOccurs="0">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Textual description of the purpose of the "Request" message.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageDataAccusationOffenceCategoryReference" type="crt:OffenceExternalReferenceType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The category of the offence of which the person is accused, as
+                        defined by Annex A of the Council Decision 2009/316/JHA.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<!-- START: limiting max length to 400 chars (v0.22 of this file) -->
+			<xsd:element name="MessageDataAccusation" type="commons:MultilingualTextType400Chars" minOccurs="0">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The category of the offence of which the person is accused, as
+                        defined by Annex A of the Council Decision 2009/316/JHA.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageDataRequestingAuthority" type="msg:RequestingAuthorityType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Information on the authority that has issued the request within the
+                        requesting Member State and before which the proceedings are pending.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<!-- START: limiting max length to 50 chars (v0.22 of this file) -->
+			<xsd:element name="MessageDataCaseReferenceNumber" type="commons:RestrictedStringType50Chars" minOccurs="0">
+			<!-- END -->
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Information on the case reference number identifying the
+                        proceedings for which the request is issued.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageDataConcernedPersonConsent" type="commons:YesNoUnknownStringEnumerationType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Specifies whether the concerned person has given its consent for
+                        the full disclosure of its criminal records information.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageDataUrgency" type="commons:YesNoUnknownStringEnumerationType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Information on the degree of urgency of the current request. Given
+                        that the type of this field is YesNoUnknownStringEnumerationType, the values provided are
+                        understood as:
+                        - "Yes" means that the urgency is High
+                        - "No" means that the urgency is Normal
+                        - "UNKNOWN" means that the urgency information is not provided
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageDataConviction" type="dm:ConvictionType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Information on the conviction.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageDataUpdatedConvictionReference" type="msg:StructuredStrictConvictionReferenceType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">A reference to the existing conviction that has already been
+                        previously notified and that is being updated by this notification message.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageDataOtherAffectedConviction" type="msg:ConvictionToConvictionsRelationshipType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">A reference to other existing convictions that have already been
+                        previously notified and that are being affected by the conviction in this message.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageDataOtherMemberState" type="crt:MemberStateCodeType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The code of the other Member State to which a request relating to
+                        the same person can be sent.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageDataRequestResponseTypeReference" type="crt:RequestResponseTypeExternalReferenceType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The technical code of the response to the request, which defines
+                        the result of the processing of the request.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageDataNotificationResponseTypeReference" type="crt:NotificationResponseTypeExternalReferenceType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The technical code of the response to the notification, which
+                        defines the result of the processing of the notification.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageDataRequestAdditionalInfoResponseTypeReference" type="crt:RequestAdditionalInfoTypeExternalReferenceType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The technical code of the response to the request for additional ID
+                        information, which defines the result of the processing of this request.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageDataFingerprints" type="msg:BinaryAttachmentType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The meta-data only of the fingerprints for the person that is
+                        referred to by this message.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageDataFingerprintsPush" type="msg:BinaryAttachmentPushType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The meta-data ad the binary content of the fingerprints for the
+                        person that is referred to by this message (i.e. "push" implementation).
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageDataDeadline" type="commons:StrictDateType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The date by which the response to the request must be sent
+                        according to the legal obligations defined by article 8 of the Council Framework Decision
+                        2009/315/JHA.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageDataAdditionalInformationRequested" type="msg:AdditionalInformationRequestedEnumeration" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The additional personal identification information element that is
+                        required in order to uniquely find the person that was referred to in a previous request or
+                        notification message.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageDataBinaryIDRequested" type="msg:BinaryAttachmentIDType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The ID of the binary attachment requested, as part of a "Request
+                        Additional Information" kinematic.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MessageDataFunctionalError" type="msg:FunctionalErrorType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The functional errors contained in this message.
+                    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- Generic complex type definitions required for Notification/Request kinematics END -->
+	<!-- Message type definitions for functional errors and cancellation START -->
+	<xsd:complexType name="FunctionalErrorDataType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents the data content of the "Functional Error" message.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractBusinessMessageDataType">
+				<xsd:sequence>
+					<xsd:element name="MessageDataContactPerson" type="msg:ContactPersonType" minOccurs="0"/>
+					<!-- START: using a string type not collapsing white-space characters (v0.22 of this file) -->
+					<xsd:element name="MessageDataRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0"/>
+					<!-- END -->
+					<xsd:element name="MessageDataFunctionalError" type="msg:FunctionalErrorType" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="FunctionalErrorMessageType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The "Functional Error" message provides information on one or more
+                functional errors that occurred during the processing of a previous ECRIS message.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractMessageType">
+				<xsd:sequence>
+					<xsd:element name="MessageMetaData" type="msg:CorrelatingMessageMetaDataType"/>
+					<xsd:element name="MessageData" type="msg:FunctionalErrorDataType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="CancellationMessageDataType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents the data content of the "cancellation" message.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractBusinessMessageDataType">
+				<xsd:sequence>
+					<xsd:element name="MessageDataContactPerson" type="msg:ContactPersonType" minOccurs="0"/>
+					<!-- START: using a string type not collapsing white-space characters (v0.22 of this file) -->
+					<xsd:element name="MessageDataRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0"/>
+					<!-- END -->
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="CancellationMessageType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">The "Cancellation" message is used to cancel a previously transmitted ECRIS
+                message. Message types that can be cancelled are Requests, Request Responses, Notifications and
+                Notification Responses
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractMessageType">
+				<xsd:sequence>
+					<xsd:element name="MessageMetaData" type="msg:CancellationMessageMetaDataType"/>
+					<xsd:element name="MessageData" type="msg:CancellationMessageDataType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- Message type definitions for functional errors and cancellation END -->
+	<!-- Message type definitions required for Request kinematics START -->
+	<xsd:complexType name="RequestMessageDataType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents the data content of the "Request" message.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractBusinessMessageDataType">
+				<xsd:sequence>
+					<xsd:element name="MessageDataContactPerson" type="msg:ContactPersonType" minOccurs="0"/>
+					<xsd:element name="MessageDataPerson" type="dm:PersonType"/>
+					<!-- START: using a string type not collapsing white-space characters (v0.22 of this file) -->
+					<xsd:element name="MessageDataRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0"/>
+					<!-- END -->
+					<xsd:element name="MessageDataRequestPurposeCategoryReference" type="crt:RequestPurposeExternalReferenceType"/>
+					<!-- START: limiting max length to 400 chars (v0.22 of this file) -->
+					<xsd:element name="MessageDataRequestPurpose" type="commons:MultilingualTextType400Chars"/>
+					<!-- END -->
+					<xsd:element name="MessageDataAccusationOffenceCategoryReference" type="crt:OffenceExternalReferenceType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- START: limiting max length to 400 chars (v0.22 of this file) -->
+					<xsd:element name="MessageDataAccusation" type="commons:MultilingualTextType400Chars" minOccurs="0" />
+					<!-- END -->
+					<xsd:element name="MessageDataRequestingAuthority" type="msg:RequestingAuthorityType"/>
+					<!-- START: limiting max length to 50 chars (v0.22 of this file) -->
+					<xsd:element name="MessageDataCaseReferenceNumber" type="commons:RestrictedStringType50Chars" minOccurs="0" />
+					<!-- END -->
+					<xsd:element name="MessageDataConcernedPersonConsent" type="commons:YesNoUnknownStringEnumerationType"/>
+					<xsd:element name="MessageDataUrgency" type="commons:YesNoUnknownStringEnumerationType"/>
+					<xsd:element name="MessageDataFingerprints" type="msg:BinaryAttachmentType" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RequestMessageType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type of message allows a Member State to transmit a request to another
+                Member State for information and related data to be extracted from the criminal record of a person.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractMessageType">
+				<xsd:sequence>
+					<xsd:element name="MessageMetaData" type="msg:MessageMetaDataType"/>
+					<xsd:element name="MessageData" type="msg:RequestMessageDataType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RequestMessageDataPushType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents the data content of the "Request" message possibly
+                including the fingerprints binary file (i.e. "push" implementation of the message).
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractBusinessMessageDataType">
+				<xsd:sequence>
+					<xsd:element name="MessageDataContactPerson" type="msg:ContactPersonType" minOccurs="0"/>
+					<xsd:element name="MessageDataPerson" type="dm:PersonType"/>
+					<!-- START: using a string type not collapsing white-space characters (v0.22 of this file) -->
+					<xsd:element name="MessageDataRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0"/>
+					<!-- END -->
+					<xsd:element name="MessageDataRequestPurposeCategoryReference" type="crt:RequestPurposeExternalReferenceType"/>
+					<!-- START: limiting max length to 400 chars (v0.22 of this file) -->
+					<xsd:element name="MessageDataRequestPurpose" type="commons:MultilingualTextType400Chars"/>
+					<!-- END -->
+					<xsd:element name="MessageDataAccusationOffenceCategoryReference" type="crt:OffenceExternalReferenceType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- START: limiting max length to 400 chars (v0.22 of this file) -->
+					<xsd:element name="MessageDataAccusation" type="commons:MultilingualTextType400Chars" minOccurs="0" />
+					<!-- END -->
+					<xsd:element name="MessageDataRequestingAuthority" type="msg:RequestingAuthorityType"/>
+					<!-- START: limiting max length to 50 chars (v0.22 of this file) -->
+					<xsd:element name="MessageDataCaseReferenceNumber" type="commons:RestrictedStringType50Chars" minOccurs="0" />
+					<!-- END -->
+					<xsd:element name="MessageDataConcernedPersonConsent" type="commons:YesNoUnknownStringEnumerationType"/>
+					<xsd:element name="MessageDataUrgency" type="commons:YesNoUnknownStringEnumerationType"/>
+					<xsd:element name="MessageDataFingerprintsPush" type="msg:BinaryAttachmentPushType" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RequestMessagePushType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type of message allows a Member State to transmit a request to another
+                Member State for information and related data to be extracted from the criminal record of a person. It
+                possibly includes the fingerprints binary file (i.e. "push" implementation of the message).
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractMessageType">
+				<xsd:sequence>
+					<xsd:element name="MessageMetaData" type="msg:MessageMetaDataType"/>
+					<xsd:element name="MessageData" type="msg:RequestMessageDataPushType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RequestDeadlineMessageDataType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents the data content of the "Request Deadline" message.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractBusinessMessageDataType">
+				<xsd:sequence>
+					<xsd:element name="MessageDataContactPerson" type="msg:ContactPersonType" minOccurs="0"/>
+					<!-- START: using a string type not collapsing white-space characters (v0.22 of this file) -->
+					<xsd:element name="MessageDataRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0"/>
+					<!-- END -->
+					<xsd:element name="MessageDataDeadline" type="commons:StrictDateType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RequestDeadlineMessageType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type of message allows a Member State to transmit the legal deadline
+                for the response to the requesting Member State.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractMessageType">
+				<xsd:sequence>
+					<xsd:element name="MessageMetaData" type="msg:CorrelatingMessageMetaDataType"/>
+					<xsd:element name="MessageData" type="msg:RequestDeadlineMessageDataType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RequestResponseMessageDataType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents the data content of the "Request Response" message. It
+                combines in a single type of message the following business responses: request denial, request problem
+                and request response. The response type indicates the resulting response.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractBusinessMessageDataType">
+				<xsd:sequence>
+					<xsd:element name="MessageDataContactPerson" type="msg:ContactPersonType" minOccurs="0"/>
+					<xsd:element name="MessageDataPerson" type="dm:PersonType"/>
+					<!-- START: using a string type not collapsing white-space characters (v0.22 of this file) -->
+					<xsd:element name="MessageDataRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0"/>
+					<!-- END -->
+					<xsd:element name="MessageDataConviction" type="dm:ConvictionType" minOccurs="0" maxOccurs="unbounded"/>
+					<xsd:element name="MessageDataOtherMemberState" type="crt:MemberStateCodeType" minOccurs="0" maxOccurs="unbounded"/>
+					<xsd:element name="MessageDataRequestResponseTypeReference" type="crt:RequestResponseTypeExternalReferenceType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RequestResponseMessageType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type of message allows a Member State to transmit the response to the
+                request. It can contain: (1) information on convictions extracted from the national criminal records
+                register (if any) in the case that the request could be processed and that a single person matching the
+                identification data has been found, (2) the request denial code if the request has been considered as
+                not valid by the requested Member State or (3) a request problem code if a business issue occurred
+                during the processing of the request.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractMessageType">
+				<xsd:sequence>
+					<xsd:element name="MessageMetaData" type="msg:CorrelatingMessageMetaDataType"/>
+					<xsd:element name="MessageData" type="msg:RequestResponseMessageDataType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RequestResponseMessageDataPushType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents the data content of the "Request Response" message. It
+                combines in a single type of message the following business responses: request denial, request problem
+                and request response. The response type indicates the resulting response. It possibly includes the
+                fingerprints binary file (i.e. "push" implementation of the message).
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractBusinessMessageDataType">
+				<xsd:sequence>
+					<xsd:element name="MessageDataContactPerson" type="msg:ContactPersonType" minOccurs="0"/>
+					<xsd:element name="MessageDataPerson" type="dm:PersonType"/>
+					<!-- START: using a string type not collapsing white-space characters (v0.22 of this file) -->
+					<xsd:element name="MessageDataRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0"/>
+					<!-- END -->
+					<xsd:element name="MessageDataConviction" type="dm:ConvictionType" minOccurs="0" maxOccurs="unbounded"/>
+					<xsd:element name="MessageDataOtherMemberState" type="crt:MemberStateCodeType" minOccurs="0" maxOccurs="unbounded"/>
+					<xsd:element name="MessageDataRequestResponseTypeReference" type="crt:RequestResponseTypeExternalReferenceType"/>
+					<xsd:element name="MessageDataFingerprintsPush" type="msg:BinaryAttachmentPushType" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RequestResponseMessagePushType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type of message allows a Member State to transmit the response to the
+                request. It can contain: (1) information on convictions extracted from the national criminal records
+                register (if any) in the case that the request could be processed and that a single person matching the
+                identification data has been found, (2) the request denial code if the request has been considered as
+                not valid by the requested Member State or (3) a request problem code if a business issue occurred
+                during the processing of the request. It possibly includes the fingerprints binary file (i.e. "push"
+                implementation of the message).
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractMessageType">
+				<xsd:sequence>
+					<xsd:element name="MessageMetaData" type="msg:CorrelatingMessageMetaDataType"/>
+					<xsd:element name="MessageData" type="msg:RequestResponseMessageDataPushType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- Message type definitions required for Request kinematics END -->
+	<!-- Message type definitions required for Notification kinematics START -->
+	<xsd:complexType name="NotificationMessageDataType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents the data content of the "Notification" message.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractBusinessMessageDataType">
+				<xsd:sequence>
+					<xsd:element name="MessageDataContactPerson" type="msg:ContactPersonType" minOccurs="0"/>
+					<xsd:element name="MessageDataPerson" type="dm:PersonType"/>
+					<!-- START: using a string type not collapsing white-space characters (v0.22 of this file) -->
+					<xsd:element name="MessageDataRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0"/>
+					<!-- END -->
+					<xsd:element name="MessageDataConviction" type="dm:ConvictionType"/>
+					<xsd:element name="MessageDataUpdatedConvictionReference" type="msg:StructuredStrictConvictionReferenceType" minOccurs="0"/>
+					<xsd:element name="MessageDataOtherAffectedConviction" type="msg:ConvictionToConvictionsRelationshipType" minOccurs="0"/>
+					<xsd:element name="MessageDataFingerprints" type="msg:BinaryAttachmentType" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="NotificationMessageType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type of message allows a Member State to transmit a notification the
+                Member State of the convicted person's nationality, carrying information on the conviction as well as
+                information on subsequent alterations and deletions.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractMessageType">
+				<xsd:sequence>
+					<xsd:element name="MessageMetaData" type="msg:MessageMetaDataType"/>
+					<xsd:element name="MessageData" type="msg:NotificationMessageDataType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="NotificationMessageDataPushType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents the data content of the "Notification" message,
+                possibly including the fingerprints binary file (i.e. "push" implementation of the message).
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractBusinessMessageDataType">
+				<xsd:sequence>
+					<xsd:element name="MessageDataContactPerson" type="msg:ContactPersonType" minOccurs="0"/>
+					<xsd:element name="MessageDataPerson" type="dm:PersonType"/>
+					<!-- START: using a string type not collapsing white-space characters (v0.22 of this file) -->
+					<xsd:element name="MessageDataRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0"/>				
+					<!-- END -->
+					<xsd:element name="MessageDataConviction" type="dm:ConvictionType"/>
+					<xsd:element name="MessageDataUpdatedConvictionReference" type="msg:StructuredStrictConvictionReferenceType" minOccurs="0"/>
+					<xsd:element name="MessageDataOtherAffectedConviction" type="msg:ConvictionToConvictionsRelationshipType" minOccurs="0"/>
+					<xsd:element name="MessageDataFingerprintsPush" type="msg:BinaryAttachmentPushType" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="NotificationMessagePushType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type of message allows a Member State to transmit a notification the
+                Member State of the convicted person's nationality, carrying information on the conviction as well as
+                information on subsequent alterations and deletions. It possibly includes the fingerprints binary file
+                (i.e. "push" implementation of the message).
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractMessageType">
+				<xsd:sequence>
+					<xsd:element name="MessageMetaData" type="msg:MessageMetaDataType"/>
+					<xsd:element name="MessageData" type="msg:NotificationMessageDataPushType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="NotificationResponseMessageDataType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents the data content of the "Notification Response"
+                message. It combines in a single type of message the following business responses: notification problem
+                and notification receipt. The response type indicates the result of the response.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractBusinessMessageDataType">
+				<xsd:sequence>
+					<xsd:element name="MessageDataContactPerson" type="msg:ContactPersonType" minOccurs="0"/>
+					<xsd:element name="MessageDataPerson" type="dm:PersonType" minOccurs="0"/>
+					<!-- START: using a string type not collapsing white-space characters (v0.22 of this file) -->
+					<xsd:element name="MessageDataRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0"/>
+					<!-- END -->
+					<xsd:element name="MessageDataNotificationResponseTypeReference" type="crt:NotificationResponseTypeExternalReferenceType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="NotificationResponseMessageType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type of message allows a Member State to inform the convicting Member
+                State of the outcome of the processing of the notification. It can contain: (1) a success message and
+                optionally the identification information under which the notificationhas been processed or (2) a
+                problem code if a business issue occurred during the processing of the notification.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractMessageType">
+				<xsd:sequence>
+					<xsd:element name="MessageMetaData" type="msg:CorrelatingMessageMetaDataType"/>
+					<xsd:element name="MessageData" type="msg:NotificationResponseMessageDataType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="NotificationResponseMessageDataPushType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents the data content of the "Notification Response"
+                message. It combines in a single type of message the following business responses: notification problem
+                and notification receipt. The response type indicates the result of the response. It possibly includes
+                the fingerprints binary file (i.e. "push" implementation of the message).
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractBusinessMessageDataType">
+				<xsd:sequence>
+					<xsd:element name="MessageDataContactPerson" type="msg:ContactPersonType" minOccurs="0"/>
+					<xsd:element name="MessageDataPerson" type="dm:PersonType" minOccurs="0"/>
+					<!-- START: using a string type not collapsing white-space characters (v0.22 of this file) -->
+					<xsd:element name="MessageDataRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0"/>
+					<!-- END -->
+					<xsd:element name="MessageDataNotificationResponseTypeReference" type="crt:NotificationResponseTypeExternalReferenceType"/>
+					<xsd:element name="MessageDataFingerprintsPush" type="msg:BinaryAttachmentPushType" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="NotificationResponseMessagePushType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type of message allows a Member State to inform the convicting Member
+                State of the outcome of the processing of the notification. It can contain: (1) a success message and
+                optionally the identification information under which the notificationhas been processed or (2) a
+                problem code if a business issue occurred during the processing of the notification. It possibly
+                includes the fingerprints binary file (i.e. "push" implementation of the message).
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractMessageType">
+				<xsd:sequence>
+					<xsd:element name="MessageMetaData" type="msg:CorrelatingMessageMetaDataType"/>
+					<xsd:element name="MessageData" type="msg:NotificationResponseMessageDataPushType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- Message type definitions required for Notification kinematics END -->
+	<!-- Message type definitions required for request additional information kinematics START -->
+	<xsd:complexType name="RequestAdditionalInfoMessageDataType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents the data content of the "Request Additional Info"
+                message.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractBusinessMessageDataType">
+				<xsd:sequence>
+					<xsd:element name="MessageDataContactPerson" type="msg:ContactPersonType" minOccurs="0"/>
+					<!-- START: using a string type not collapsing white-space characters (v0.22 of this file) -->
+					<xsd:element name="MessageDataRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0"/>
+					<!-- END -->
+					<xsd:element name="MessageDataAdditionalInformationRequested" type="msg:AdditionalInformationRequestedEnumeration" maxOccurs="unbounded"/>
+					<xsd:element name="MessageDataBinaryIDRequested" type="msg:BinaryAttachmentIDType" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RequestAdditionalInfoMessageType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type of message is used by the Member State performing the search of a
+                person for asking additional identification information to the requesting/convicting Member State.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractMessageType">
+				<xsd:sequence>
+					<xsd:element name="MessageMetaData" type="msg:CorrelatingMessageMetaDataType"/>
+					<xsd:element name="MessageData" type="msg:RequestAdditionalInfoMessageDataType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RequestAdditionalInfoResponseMessageDataType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents the data content of the "Request Additional Info
+                Response" message. It combines in a single type of message the following business responses: additional
+                ID info available and additional ID info unavailable. The response type indicates the result of the
+                response.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractBusinessMessageDataType">
+				<xsd:sequence>
+					<xsd:element name="MessageDataContactPerson" type="msg:ContactPersonType" minOccurs="0"/>
+					<xsd:element name="MessageDataPerson" type="dm:PersonType" minOccurs="0"/>
+					<!-- START: using a string type not collapsing white-space characters (v0.22 of this file) -->
+					<xsd:element name="MessageDataRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0"/>
+					<!-- END -->
+					<!-- START: limiting max length to 400 chars (v0.22 of this file) -->
+					<xsd:element name="MessageDataRequestPurpose" type="commons:MultilingualTextType400Chars" minOccurs="0"/>
+					<!-- END -->
+					<xsd:element name="MessageDataRequestAdditionalInfoResponseTypeReference" type="crt:RequestAdditionalInfoTypeExternalReferenceType"/>
+					<xsd:element name="MessageDataFingerprints" type="msg:BinaryAttachmentType" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RequestAdditionalInfoResponseMessageType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type of message allows a Member State to respond to the "Request
+                Additional Info" message with updated personal identification data.
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractMessageType">
+				<xsd:sequence>
+					<xsd:element name="MessageMetaData" type="msg:CorrelatingMessageMetaDataType"/>
+					<xsd:element name="MessageData" type="msg:RequestAdditionalInfoResponseMessageDataType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RequestAdditionalInfoResponseMessageDataPushType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type represents the data content of the "Request Additional Info
+                Response" message. It combines in a single type of message the following business responses: additional
+                ID info available and additional ID info unavailable. The response type indicates the result of the
+                response. It possibly includes the fingerprints binary file (i.e. "push" implementation of the message).
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractBusinessMessageDataType">
+				<xsd:sequence>
+					<xsd:element name="MessageDataContactPerson" type="msg:ContactPersonType" minOccurs="0"/>
+					<xsd:element name="MessageDataPerson" type="dm:PersonType" minOccurs="0"/>
+					<!-- START: using a string type not collapsing white-space characters (v0.22 of this file) -->
+					<xsd:element name="MessageDataRemarks" type="commons:UncollapsedMultilingualTextType" minOccurs="0"/>
+					<!-- END -->
+					<!-- START: limiting max length to 400 chars (v0.22 of this file) -->
+					<xsd:element name="MessageDataRequestPurpose" type="commons:MultilingualTextType400Chars" minOccurs="0"/>
+					<!-- END -->
+					<xsd:element name="MessageDataRequestAdditionalInfoResponseTypeReference" type="crt:RequestAdditionalInfoTypeExternalReferenceType"/>
+					<xsd:element name="MessageDataFingerprintsPush" type="msg:BinaryAttachmentPushType" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RequestAdditionalInfoResponseMessagePushType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">This type of message allows a Member State to respond to the "Request
+                Additional Info " message with updated personal identification data, possibly including the fingerprints
+                binary file (i.e. "push" implementation of the message).
+            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="msg:AbstractMessageType">
+				<xsd:sequence>
+					<xsd:element name="MessageMetaData" type="msg:CorrelatingMessageMetaDataType"/>
+					<xsd:element name="MessageData" type="msg:RequestAdditionalInfoResponseMessageDataPushType"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- Message type definitions required for request additional information kinematics END -->
+</xsd:schema>
