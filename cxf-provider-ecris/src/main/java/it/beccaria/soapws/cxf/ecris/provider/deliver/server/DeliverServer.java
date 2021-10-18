@@ -90,12 +90,26 @@ public class DeliverServer extends EcrisServicePortTypeV10Impl {
 
     	// qui verificare se  bisogna usare qualche costrutto JAXB
 
-    	var data = (RequestMessageDataType) body.getMessageData();
-    	var deadline = data.getMessageDataDeadline();
+    	try {
+	    	var data = (RequestMessageDataType) body.getMessageData();
+	    	var deadline = data.getMessageDataDeadline();
 
-    	System.out.println("last but not least");
-    	System.out.println("(RequestMessageDataType) body.getMessageData().getMessageDataDeadline()");
-    	System.out.println(deadline);
+	    	System.out.println("last but not least");
+	    	System.out.println("(RequestMessageDataType) body.getMessageData().getMessageDataDeadline()");
+
+	    	System.out.println(deadline);
+    	}
+    	catch(java.lang.ClassCastException e) {
+
+	    	System.out.println("last");
+	    	System.out.println("qui verificare se  bisogna usare qualche costrutto JAXB");
+
+//	    	//var messagesObjectFactory = new eu.europa.ec.ecris.messages_v1.ObjectFactory();
+//	    	JAXBElement<RequestMessageDataType> a = (JAXBElement<RequestMessageDataType>) body.getMessageData();
+
+//	    	ElementNSImpl  element = (ElementNSImpl ) body.getMessageData();
+
+    	}
 
 
 
