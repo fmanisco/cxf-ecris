@@ -24,7 +24,7 @@ public class DeliverClientConfig {
 	}
 
 	@Bean
-	public DeliverClient isAliveClient(@Qualifier("deliverMarshaller") Jaxb2Marshaller marshaller) {
+	public DeliverClient getClientInstance(@Qualifier("deliverMarshaller") Jaxb2Marshaller marshaller) {
 
 //		log.debug("defaultUri ");
 //		log.debug( defaultUri);
