@@ -46,9 +46,7 @@ public class DeliverClient extends WebServiceGatewaySupport implements EcrisServ
     	try {
 
     		var result = new URL("http://localhost:8380/cxf/ecris?wsdl");
-//			URL url = new URL(this.getClass().getClassLoader().getResourceAsStream(""));
-//
-//					//ClassLoaderUtil.getResource("wsdl/ecris-service-v1.0.wsdl", this);
+
 			return result;
 
 		} catch (MalformedURLException e) {
@@ -127,6 +125,8 @@ public class DeliverClient extends WebServiceGatewaySupport implements EcrisServ
 
     	var data = (RequestMessageDataType) body.getMessageData();
     	var deadline = data.getMessageDataDeadline();
+
+
 
     	System.out.println("CLIENT invia >>>");
     	System.out.println("(RequestMessageDataType) body.getMessageData().getMessageDataDeadline()");

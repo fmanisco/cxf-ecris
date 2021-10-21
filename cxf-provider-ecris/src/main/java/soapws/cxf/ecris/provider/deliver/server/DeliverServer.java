@@ -4,6 +4,9 @@ import java.util.Date;
 
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eu.europa.ec.ecris.contract.EcrisServicePortTypeV10Impl;
 import eu.europa.ec.ecris.messages_v1.AbstractMessageType;
 import eu.europa.ec.ecris.messages_v1.RequestMessageDataType;
@@ -98,16 +101,27 @@ public class DeliverServer extends EcrisServicePortTypeV10Impl {
 	    	System.out.println("(RequestMessageDataType) body.getMessageData().getMessageDataDeadline()");
 
 	    	System.out.println(deadline);
+
+
+	    	ObjectMapper objectMapper = new ObjectMapper();
+	    	try {
+				var d = objectMapper.writeValueAsString(data);
+
+		    	System.out.println(d);
+
+
+			} catch (JsonProcessingException e) {
+
+				e.printStackTrace();
+			}
+
+
+
     	}
     	catch(java.lang.ClassCastException e) {
 
 	    	System.out.println("last");
 	    	System.out.println("qui verificare se  bisogna usare qualche costrutto JAXB");
-
-//	    	//var messagesObjectFactory = new eu.europa.ec.ecris.messages_v1.ObjectFactory();
-//	    	JAXBElement<RequestMessageDataType> a = (JAXBElement<RequestMessageDataType>) body.getMessageData();
-
-//	    	ElementNSImpl  element = (ElementNSImpl ) body.getMessageData();
 
     	}
 
